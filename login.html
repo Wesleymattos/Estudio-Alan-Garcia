@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login e Agenda | Studio Alan Garcia</title><link rel="stylesheet" href="css/style.css">
+</head><body class="login-body">
+<div class="login-shell">
+  <section class="login-brand-panel">
+    <a href="index.html" class="brand brand-logo login-logo" data-link><img src="assets/logo-alan-garcia.png" alt="Studio Alan Garcia"></a>
+    <div><p class="eyebrow">ÁREA ADMINISTRATIVA</p><h1>Agenda<br><span>online.</span></h1><p>Organize horários e acompanhe os agendamentos em um único lugar.</p></div>
+  </section>
+  <section class="login-panel">
+    <div id="loginView">
+      <p class="eyebrow">ACESSO</p><h2>Entrar</h2>
+      <form id="loginForm" class="login-form">
+        <label>Usuário<input id="loginUser" required placeholder="admin"></label>
+        <label>Senha<input id="loginPassword" type="password" required placeholder="Digite sua senha"></label>
+        <button class="btn btn-primary" type="submit">Entrar na agenda</button>
+        <p id="loginMessage" class="form-message"></p>
+      </form>
+      <div class="demo-note">Primeira versão: acesso local de demonstração.<br><b>Usuário:</b> admin &nbsp; <b>Senha:</b> admin123</div>
+    </div>
+
+    <div id="agendaView" hidden>
+      <div class="agenda-top"><div><p class="eyebrow">PAINEL</p><h2>Agenda</h2></div><button id="logoutBtn" class="btn btn-small">Sair</button></div>
+      <div class="firebase-status" id="firebaseStatus">Verificando Firebase...</div>
+      <form id="appointmentForm" class="appointment-form">
+        <label>Nome<input id="clientName" required placeholder="Nome do aluno"></label>
+        <label>Data<input id="appointmentDate" type="date" required></label>
+        <label>Horário<input id="appointmentTime" type="time" required></label>
+        <label>Serviço<select id="appointmentService"><option>Treino personalizado</option><option>Aula experimental</option><option>Avaliação</option></select></label>
+        <label class="full">Observação<input id="appointmentNotes" placeholder="Opcional"></label>
+        <button class="btn btn-primary full" type="submit">Adicionar à agenda</button>
+      </form>
+      <div class="agenda-toolbar"><h3>Próximos horários</h3><button id="clearDemoBtn" class="text-button">Limpar agenda local</button></div>
+      <div id="appointmentList" class="appointment-list"></div>
+    </div>
+  </section>
+</div>
+<script type="module" src="js/login.js"></script>
+</body></html>
