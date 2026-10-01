@@ -114,36 +114,65 @@ if (contactForm) {
 
     e.preventDefault();
 
-    const name = document.querySelector("#name").value.trim();
-    const phone = document.querySelector("#phone").value.trim();
-    const goal = document.querySelector("#goal").value;
-    const message = document.querySelector("#message").value.trim();
+    const msg = contactForm.querySelector(".form-message");
+    const button = contactForm.querySelector("button[type='submit']");
 
-    const email = "studioalangarcia@gmail.com";
+    if (button) {
+      button.disabled = true;
 
-    const subject = encodeURIComponent(
-      `Novo contato pelo site - ${name}`
-    );
+      button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Enviando...
+      `;
+    }
 
-    const body = encodeURIComponent(
-`Olá, Studio Alan Garcia!
+    emailjs.sendForm(
+      "service_g2fll5e",
+      "template_x312lys",
+      contactForm
+    )
 
-Recebemos um novo contato pelo site.
+    .then(() => {
 
-Nome: ${name}
-Telefone/WhatsApp: ${phone}
-Objetivo: ${goal}
+      if (msg) {
+        msg.textContent =
+          "Mensagem enviada com sucesso! Entraremos em contato em breve.";
+      }
 
-Mensagem:
-${message}
+      contactForm.reset();
 
-------------------------------
-Mensagem enviada pelo site
-Studio Alan Garcia`
-    );
+      if (button) {
+        button.disabled = false;
 
-    window.location.href =
-      `mailto:${email}?subject=${subject}&body=${body}`;
+        button.innerHTML = `
+          <i class="fa-solid fa-envelope"></i>
+          Enviar mensagem
+          <b>→</b>
+        `;
+      }
+
+    })
+
+    .catch(error => {
+
+      console.error("Erro ao enviar:", error);
+
+      if (msg) {
+        msg.textContent =
+          "Não foi possível enviar a mensagem. Tente novamente.";
+      }
+
+      if (button) {
+        button.disabled = false;
+
+        button.innerHTML = `
+          <i class="fa-solid fa-envelope"></i>
+          Enviar mensagem
+          <b>→</b>
+        `;
+      }
+
+    });
 
   });
 
