@@ -106,25 +106,47 @@ document.addEventListener("DOMContentLoaded", () => {
   // FORMULÁRIO DE CONTATO
   // ============================================================
 
-  const contactForm = document.querySelector("#contactForm");
+const contactForm = document.querySelector("#contactForm");
 
-  if (contactForm) {
+if (contactForm) {
 
-    contactForm.addEventListener("submit", e => {
+  contactForm.addEventListener("submit", e => {
 
-      e.preventDefault();
+    e.preventDefault();
 
-      const msg = contactForm.querySelector(".form-message");
+    const name = document.querySelector("#name").value.trim();
+    const phone = document.querySelector("#phone").value.trim();
+    const goal = document.querySelector("#goal").value;
+    const message = document.querySelector("#message").value.trim();
 
-      if (msg) {
-        msg.textContent =
-          "Mensagem registrada nesta versão inicial. Em breve podemos conectar ao WhatsApp ou Firebase.";
-      }
+    const email = "studioalangarcia@gmail.com";
 
-      contactForm.reset();
+    const subject = encodeURIComponent(
+      `Novo contato pelo site - ${name}`
+    );
 
-    });
+    const body = encodeURIComponent(
+`Olá, Studio Alan Garcia!
 
-  }
+Recebemos um novo contato pelo site.
+
+Nome: ${name}
+Telefone/WhatsApp: ${phone}
+Objetivo: ${goal}
+
+Mensagem:
+${message}
+
+------------------------------
+Mensagem enviada pelo site
+Studio Alan Garcia`
+    );
+
+    window.location.href =
+      `mailto:${email}?subject=${subject}&body=${body}`;
+
+  });
+
+}
 
 });
