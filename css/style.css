@@ -3678,3 +3678,421 @@ footer a:hover {
 .login-form label {
   text-align: left;
 }
+
+
+/* ============================================================
+   MODAL — CADASTRO DE ALUNO
+============================================================ */
+
+.student-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 25px;
+}
+
+.student-modal[hidden] {
+  display: none;
+}
+
+
+/* FUNDO */
+
+.student-modal-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.78);
+
+  backdrop-filter: blur(8px);
+}
+
+
+/* CARD */
+
+.student-modal-card {
+  position: relative;
+  z-index: 1;
+
+  width: min(900px, 100%);
+  max-height: 92vh;
+
+  overflow-y: auto;
+
+  background: #171a20;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  border-radius: 20px;
+
+  padding: 32px;
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.55);
+}
+
+
+/* CABEÇALHO */
+
+.student-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  padding-bottom: 25px;
+  margin-bottom: 25px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.student-modal-header h2 {
+  margin: 4px 0 8px;
+
+  font-size: 2rem;
+
+  line-height: 1.1;
+}
+
+
+.student-modal-header p:not(.eyebrow) {
+  margin: 0;
+
+  color: #aeb4bf;
+}
+
+
+/* BOTÃO FECHAR */
+
+.student-modal-close {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  border-radius: 10px;
+
+  background: #20242c;
+
+  color: #fff;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.2s;
+}
+
+
+.student-modal-close:hover {
+  background: #ff982f;
+  color: #111;
+
+  transform: scale(1.05);
+}
+
+
+/* FORMULÁRIO */
+
+.student-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 25px;
+}
+
+
+/* SEÇÕES */
+
+.student-form-section {
+  padding: 22px;
+
+  background: #1c2027;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  border-radius: 14px;
+}
+
+
+.student-form-section-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 20px;
+
+  color: #fff;
+
+  font-weight: 700;
+}
+
+
+.student-form-section-title i {
+  color: #ff982f;
+
+  font-size: 17px;
+}
+
+
+/* GRID */
+
+.student-form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+
+.student-form-grid label {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  color: #d8dbe1;
+
+  font-size: 0.9rem;
+
+  font-weight: 600;
+}
+
+
+.student-form-grid label.full {
+  grid-column: 1 / -1;
+}
+
+
+/* INPUTS */
+
+.student-form-grid input,
+.student-form-grid select,
+.student-form-grid textarea {
+  width: 100%;
+
+  padding: 13px 14px;
+
+  border: 1px solid #363b44;
+
+  border-radius: 9px;
+
+  background: #111419;
+
+  color: #fff;
+
+  font: inherit;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+
+.student-form-grid input::placeholder,
+.student-form-grid textarea::placeholder {
+  color: #69717d;
+}
+
+
+.student-form-grid textarea {
+  resize: vertical;
+
+  min-height: 90px;
+}
+
+
+.student-form-grid input:focus,
+.student-form-grid select:focus,
+.student-form-grid textarea:focus {
+  border-color: #ff982f;
+
+  box-shadow:
+    0 0 0 3px rgba(255, 152, 47, 0.10);
+}
+
+
+.student-form-grid input[readonly] {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+}
+
+
+/* SELECT */
+
+.student-form-grid select {
+  cursor: pointer;
+}
+
+
+/* INFORMAÇÃO DA SENHA */
+
+.student-password-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 15px 0 0;
+
+  color: #aeb4bf;
+
+  font-size: 0.85rem;
+}
+
+
+.student-password-info i {
+  color: #ff982f;
+}
+
+
+/* MENSAGEM */
+
+#studentFormMessage {
+  margin: 0;
+}
+
+
+/* BOTÕES */
+
+.student-form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  padding-top: 5px;
+}
+
+
+.btn-secondary {
+  background: #292e37;
+
+  color: #fff;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+
+.btn-secondary:hover {
+  background: #343a45;
+}
+
+
+/* BOTÃO DESABILITADO */
+
+.student-form-actions .btn:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* SCROLLBAR DO MODAL */
+
+.student-modal-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+
+.student-modal-card::-webkit-scrollbar-track {
+  background: #111419;
+}
+
+
+.student-modal-card::-webkit-scrollbar-thumb {
+  background: #3b414b;
+
+  border-radius: 10px;
+}
+
+
+.student-modal-card::-webkit-scrollbar-thumb:hover {
+  background: #ff982f;
+}
+
+
+/* ============================================================
+   RESPONSIVO
+============================================================ */
+
+@media (max-width: 700px) {
+
+  .student-modal {
+    padding: 10px;
+  }
+
+
+  .student-modal-card {
+    max-height: 96vh;
+
+    padding: 20px;
+
+    border-radius: 16px;
+  }
+
+
+  .student-modal-header {
+    gap: 15px;
+
+    padding-bottom: 18px;
+
+    margin-bottom: 18px;
+  }
+
+
+  .student-modal-header h2 {
+    font-size: 1.5rem;
+  }
+
+
+  .student-form-section {
+    padding: 16px;
+  }
+
+
+  .student-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .student-form-grid label.full {
+    grid-column: auto;
+  }
+
+
+  .student-form-actions {
+    flex-direction: column-reverse;
+  }
+
+
+  .student-form-actions .btn {
+    width: 100%;
+  }
+
+}

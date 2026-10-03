@@ -1099,17 +1099,6 @@ async function updateDashboard() {
 }
 
 
-// ============================================================
-// NOVO ALUNO
-// ============================================================
-
-function handleNewStudent() {
-
-  alert(
-    "O cadastro de alunos será implementado na próxima etapa."
-  );
-
-}
 
 
 // ============================================================
@@ -1406,22 +1395,7 @@ function initEvents() {
     });
 
 
-  // -----------------------------------------
-  // NOVO ALUNO
-  // -----------------------------------------
 
-  const newStudentBtn =
-    $("#newStudentBtn");
-
-
-  if (newStudentBtn) {
-
-    newStudentBtn.addEventListener(
-      "click",
-      handleNewStudent
-    );
-
-  }
 
 
   // -----------------------------------------

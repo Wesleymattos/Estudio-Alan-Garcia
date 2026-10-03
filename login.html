@@ -1008,7 +1008,434 @@
 
     </main>
 
+<!-- =================================================
+     MODAL — NOVO ALUNO
+================================================== -->
 
+<div
+  class="student-modal"
+  id="studentModal"
+  hidden
+>
+
+  <div class="student-modal-overlay"></div>
+
+  <div class="student-modal-card">
+
+    <div class="student-modal-header">
+
+      <div>
+
+        <p class="eyebrow">
+          NOVO CADASTRO
+        </p>
+
+        <h2>
+          Cadastrar aluno
+        </h2>
+
+        <p>
+          Preencha os dados do novo aluno.
+        </p>
+
+      </div>
+
+      <button
+        id="closeStudentModal"
+        class="student-modal-close"
+        type="button"
+        aria-label="Fechar"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+    </div>
+
+
+    <form
+      id="studentForm"
+      class="student-form"
+    >
+
+      <!-- DADOS PESSOAIS -->
+
+      <div class="student-form-section">
+
+        <div class="student-form-section-title">
+
+          <i class="fa-solid fa-user"></i>
+
+          <span>
+            Dados pessoais
+          </span>
+
+        </div>
+
+
+        <div class="student-form-grid">
+
+          <label class="full">
+
+            Nome completo
+
+            <input
+              id="studentName"
+              type="text"
+              required
+              placeholder="Nome completo do aluno"
+            >
+
+          </label>
+
+
+          <label>
+
+            E-mail
+
+            <input
+              id="studentEmail"
+              type="email"
+              required
+              autocomplete="off"
+              placeholder="aluno@email.com"
+            >
+
+          </label>
+
+
+          <label>
+
+            WhatsApp
+
+            <input
+              id="studentWhatsapp"
+              type="tel"
+              placeholder="(51) 99999-9999"
+            >
+
+          </label>
+
+
+          <label>
+
+            CPF
+
+            <input
+              id="studentCpf"
+              type="text"
+              placeholder="000.000.000-00"
+            >
+
+          </label>
+
+
+          <label>
+
+            Data de nascimento
+
+            <input
+              id="studentBirthDate"
+              type="date"
+              required
+            >
+
+          </label>
+
+
+          <label>
+
+            Idade
+
+            <input
+              id="studentAge"
+              type="number"
+              readonly
+              placeholder="Automático"
+            >
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- ENDEREÇO -->
+
+      <div class="student-form-section">
+
+        <div class="student-form-section-title">
+
+          <i class="fa-solid fa-location-dot"></i>
+
+          <span>
+            Endereço
+          </span>
+
+        </div>
+
+
+        <div class="student-form-grid">
+
+          <label class="full">
+
+            Rua
+
+            <input
+              id="studentStreet"
+              type="text"
+              placeholder="Nome da rua"
+            >
+
+          </label>
+
+
+          <label>
+
+            Número
+
+            <input
+              id="studentNumber"
+              type="text"
+              placeholder="123"
+            >
+
+          </label>
+
+
+          <label>
+
+            Bairro
+
+            <input
+              id="studentNeighborhood"
+              type="text"
+              placeholder="Bairro"
+            >
+
+          </label>
+
+
+          <label>
+
+            Cidade
+
+            <input
+              id="studentCity"
+              type="text"
+              value="Gravataí"
+              placeholder="Cidade"
+            >
+
+          </label>
+
+
+          <label>
+
+            Estado
+
+            <input
+              id="studentState"
+              type="text"
+              value="RS"
+              maxlength="2"
+              placeholder="RS"
+            >
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- INFORMAÇÕES INICIAIS -->
+
+      <div class="student-form-section">
+
+        <div class="student-form-section-title">
+
+          <i class="fa-solid fa-dumbbell"></i>
+
+          <span>
+            Informações iniciais
+          </span>
+
+        </div>
+
+
+        <div class="student-form-grid">
+
+          <label>
+
+            Peso inicial (kg)
+
+            <input
+              id="studentInitialWeight"
+              type="number"
+              step="0.1"
+              min="0"
+              placeholder="Ex.: 82.5"
+            >
+
+          </label>
+
+
+          <label>
+
+            Objetivo
+
+            <select id="studentGoal">
+
+              <option value="">
+                Selecione
+              </option>
+
+              <option value="Emagrecimento">
+                Emagrecimento
+              </option>
+
+              <option value="Hipertrofia">
+                Hipertrofia
+              </option>
+
+              <option value="Condicionamento físico">
+                Condicionamento físico
+              </option>
+
+              <option value="Saúde e qualidade de vida">
+                Saúde e qualidade de vida
+              </option>
+
+              <option value="Força">
+                Força
+              </option>
+
+              <option value="Outro">
+                Outro
+              </option>
+
+            </select>
+
+          </label>
+
+
+          <label class="full">
+
+            Observação
+
+            <textarea
+              id="studentObservation"
+              rows="3"
+              placeholder="Informações importantes sobre o aluno..."
+            ></textarea>
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACESSO -->
+
+      <div class="student-form-section">
+
+        <div class="student-form-section-title">
+
+          <i class="fa-solid fa-lock"></i>
+
+          <span>
+            Acesso ao sistema
+          </span>
+
+        </div>
+
+
+        <div class="student-form-grid">
+
+          <label>
+
+            Senha inicial
+
+            <input
+              id="studentPassword"
+              type="password"
+              required
+              minlength="6"
+              autocomplete="new-password"
+              placeholder="Mínimo 6 caracteres"
+            >
+
+          </label>
+
+
+          <label>
+
+            Confirmar senha
+
+            <input
+              id="studentPasswordConfirm"
+              type="password"
+              required
+              minlength="6"
+              autocomplete="new-password"
+              placeholder="Digite novamente"
+            >
+
+          </label>
+
+        </div>
+
+
+        <p class="student-password-info">
+
+          <i class="fa-solid fa-circle-info"></i>
+
+          Esta será a senha inicial usada pelo aluno
+          para acessar o sistema.
+
+        </p>
+
+      </div>
+
+
+      <p
+        id="studentFormMessage"
+        class="form-message"
+      ></p>
+
+
+      <div class="student-form-actions">
+
+        <button
+          id="cancelStudentBtn"
+          class="btn btn-secondary"
+          type="button"
+        >
+          Cancelar
+        </button>
+
+
+        <button
+          id="saveStudentBtn"
+          class="btn btn-primary"
+          type="submit"
+        >
+
+          <i class="fa-solid fa-user-plus"></i>
+
+          Cadastrar aluno
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
   </div>
 
 
@@ -1021,6 +1448,11 @@
     type="module"
     src="js/login.js"
   ></script>
+
+  <script
+  type="module"
+  src="js/alunos.js"
+></script>
 
 
 </body>
