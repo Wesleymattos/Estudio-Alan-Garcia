@@ -651,24 +651,71 @@
         </div>
 
 
-        <div class="admin-card">
 
-          <div class="admin-empty-state">
 
-            <i class="fa-solid fa-users"></i>
+<div class="admin-card student-list-card">
 
-            <h3>
-              Cadastro de alunos
-            </h3>
+  <div class="student-list-toolbar">
 
-            <p>
-              Em breve você poderá cadastrar os alunos
-              diretamente por aqui.
-            </p>
+    <div>
+      <p class="eyebrow">
+        ALUNOS CADASTRADOS
+      </p>
 
-          </div>
+      <h3>
+        Lista de alunos
+      </h3>
+    </div>
 
-        </div>
+    <div class="student-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+
+      <input
+        type="search"
+        id="studentSearch"
+        placeholder="Buscar aluno..."
+        autocomplete="off"
+      >
+    </div>
+
+  </div>
+
+
+  <div
+    id="studentListMessage"
+    class="student-list-message"
+  >
+    Carregando alunos...
+  </div>
+
+
+  <div
+    class="student-table-wrapper"
+    id="studentTableWrapper"
+  >
+
+    <table class="student-table">
+
+      <thead>
+        <tr>
+          <th>Aluno</th>
+          <th>WhatsApp</th>
+          <th>Objetivo</th>
+          <th>Peso</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody id="studentList">
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div> 
+
 
       </section>
 
@@ -1452,6 +1499,11 @@
   <script
   type="module"
   src="js/alunos.js"
+></script>
+
+<script
+  type="module"
+  src="js/alunos-lista.js"
 ></script>
 
 

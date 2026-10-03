@@ -566,6 +566,10 @@ async function createStudent(event) {
       "success"
     );
 
+    window.dispatchEvent(
+  new CustomEvent("studentCreated")
+);
+
 
     await new Promise(
       resolve =>

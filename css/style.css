@@ -4096,3 +4096,242 @@ footer a:hover {
   }
 
 }
+
+/* ============================================================
+   LISTA DE ALUNOS
+============================================================ */
+
+.student-list-card {
+  overflow: hidden;
+}
+
+
+.student-list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+
+.student-list-toolbar h3 {
+  margin: 0;
+}
+
+
+.student-search {
+  position: relative;
+  width: min(100%, 320px);
+}
+
+
+.student-search i {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+
+.student-search input {
+  width: 100%;
+  height: 46px;
+  padding: 0 16px 0 45px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 10px;
+  background: #111316;
+  color: #fff;
+  outline: none;
+}
+
+
+.student-search input:focus {
+  border-color: #f28c28;
+  box-shadow: 0 0 0 3px rgba(242,140,40,.10);
+}
+
+
+.student-list-message {
+  padding: 35px 20px;
+  text-align: center;
+  color: #888;
+}
+
+
+.student-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 850px;
+}
+
+
+.student-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: .75rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #888;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+
+.student-table td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  color: #ddd;
+  vertical-align: middle;
+}
+
+
+.student-table tbody tr {
+  transition: background .2s ease;
+}
+
+
+.student-table tbody tr:hover {
+  background: rgba(255,255,255,.025);
+}
+
+
+/* ALUNO */
+
+.student-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+
+.student-avatar {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    #f28c28,
+    #d86612
+  );
+  color: #fff;
+  font-weight: 800;
+  font-size: .8rem;
+}
+
+
+.student-name-cell strong {
+  display: block;
+  color: #fff;
+  margin-bottom: 3px;
+}
+
+
+.student-name-cell span {
+  display: block;
+  font-size: .78rem;
+  color: #777;
+}
+
+
+/* STATUS */
+
+.student-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+
+.student-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+
+.student-status.active {
+  background: rgba(54, 180, 95, .10);
+  color: #55c879;
+}
+
+
+.student-status.active::before {
+  background: #55c879;
+}
+
+
+.student-status.inactive {
+  background: rgba(220, 80, 80, .10);
+  color: #e56b6b;
+}
+
+
+.student-status.inactive::before {
+  background: #e56b6b;
+}
+
+
+/* AÇÕES */
+
+.student-actions {
+  display: flex;
+  gap: 7px;
+}
+
+
+.student-action-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px;
+  background: #15171a;
+  color: #aaa;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+
+.student-action-btn:hover {
+  border-color: #f28c28;
+  color: #f28c28;
+  background: rgba(242,140,40,.08);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .student-list-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+
+  .student-search {
+    width: 100%;
+  }
+
+
+  .student-table-wrapper {
+    margin-left: -5px;
+    width: calc(100% + 10px);
+  }
+
+}
