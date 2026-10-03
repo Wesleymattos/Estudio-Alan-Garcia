@@ -10,11 +10,17 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Login e Agenda | Studio Alan Garcia</title>
+  <title>Painel Administrativo | Studio Alan Garcia</title>
 
   <link
     rel="stylesheet"
     href="css/style.css"
+  >
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
   >
 
 </head>
@@ -23,12 +29,17 @@
 <body class="login-body">
 
 
-  <div class="login-shell">
+  <!-- =====================================================
+       LOGIN
+  ====================================================== -->
+
+  <div
+    class="login-shell"
+    id="loginView"
+  >
 
 
-    <!-- =====================================================
-         PAINEL DA MARCA
-    ====================================================== -->
+    <!-- PAINEL DA MARCA -->
 
     <section class="login-brand-panel">
 
@@ -52,17 +63,15 @@
           ÁREA ADMINISTRATIVA
         </p>
 
-
         <h1>
-          Agenda
+          Gestão
           <br>
-          <span>online.</span>
+          <span>inteligente.</span>
         </h1>
 
-
         <p>
-          Organize horários e acompanhe os
-          agendamentos em um único lugar.
+          Organize alunos, horários e a rotina
+          do Studio em um único lugar.
         </p>
 
       </div>
@@ -71,163 +80,647 @@
 
 
 
-    <!-- =====================================================
-         PAINEL DE LOGIN
-    ====================================================== -->
+    <!-- PAINEL DE LOGIN -->
 
     <section class="login-panel">
 
+      <p class="eyebrow">
+        ACESSO
+      </p>
 
-      <!-- ===================================================
-           LOGIN
-      ==================================================== -->
-
-      <div id="loginView">
-
-        <p class="eyebrow">
-          ACESSO
-        </p>
+      <h2>
+        Entrar
+      </h2>
 
 
-        <h2>
-          Entrar
-        </h2>
+      <form
+        id="loginForm"
+        class="login-form"
+      >
 
 
-        <form
-          id="loginForm"
-          class="login-form"
-        >
+        <label>
 
+          E-mail
 
-          <!-- E-MAIL -->
-
-          <label>
-
-            E-mail
-
-            <input
-              id="loginEmail"
-              type="email"
-              required
-              autocomplete="email"
-              placeholder="seu@email.com"
-            >
-
-          </label>
-
-
-
-          <!-- SENHA -->
-
-          <label>
-
-            Senha
-
-            <input
-              id="loginPassword"
-              type="password"
-              required
-              autocomplete="current-password"
-              placeholder="Digite sua senha"
-            >
-
-          </label>
-
-
-
-          <!-- BOTÃO -->
-
-          <button
-            class="btn btn-primary"
-            type="submit"
+          <input
+            id="loginEmail"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="seu@email.com"
           >
 
-            Entrar na agenda
-
-          </button>
+        </label>
 
 
 
-          <!-- MENSAGEM -->
+        <label>
 
-          <p
-            id="loginMessage"
-            class="form-message"
-          ></p>
+          Senha
+
+          <input
+            id="loginPassword"
+            type="password"
+            required
+            autocomplete="current-password"
+            placeholder="Digite sua senha"
+          >
+
+        </label>
 
 
-        </form>
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+        >
+
+          Entrar no painel
+
+        </button>
+
+
+        <p
+          id="loginMessage"
+          class="form-message"
+        ></p>
+
+
+      </form>
+
+    </section>
+
+
+  </div>
+
+
+
+  <!-- =====================================================
+       PAINEL ADMINISTRATIVO
+  ====================================================== -->
+
+ <div
+  id="adminView"
+  class="admin-panel"
+  hidden
+>
+
+
+<div class="admin-mobile-header">
+
+  <button
+    class="admin-menu-toggle"
+    id="adminMenuToggle"
+    type="button"
+    aria-label="Abrir menu"
+  >
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="admin-mobile-logo">
+    <img
+      src="assets/logo-alan-garcia.png"
+      alt="Studio Alan Garcia"
+    >
+  </div>
+
+</div>
+
+<div
+  class="admin-overlay"
+  id="adminOverlay"
+></div>
+
+    <!-- ===================================================
+         SIDEBAR
+    ==================================================== -->
+
+    <aside class="admin-sidebar">
+
+
+      <!-- LOGO -->
+
+      <div class="admin-brand">
+
+        <img
+          src="assets/logo-alan-garcia.png"
+          alt="Studio Alan Garcia"
+        >
 
       </div>
 
 
 
-      <!-- ===================================================
-           AGENDA
-      ==================================================== -->
+      <!-- USUÁRIO -->
 
-      <div
-        id="agendaView"
-        hidden
+      <div class="admin-user">
+
+        <div class="admin-user-avatar">
+          AG
+        </div>
+
+        <div>
+
+          <strong id="adminUserName">
+            Alan Garcia
+          </strong>
+
+          <span>
+            Administrador
+          </span>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- MENU -->
+
+      <nav class="admin-nav">
+
+
+        <button
+          class="admin-nav-item active"
+          data-section="dashboard"
+          type="button"
+        >
+
+          <i class="fa-solid fa-house"></i>
+
+          <span>
+            Dashboard
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="admin-nav-item"
+          data-section="alunos"
+          type="button"
+        >
+
+          <i class="fa-solid fa-users"></i>
+
+          <span>
+            Alunos
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="admin-nav-item"
+          data-section="agenda"
+          type="button"
+        >
+
+          <i class="fa-solid fa-calendar-days"></i>
+
+          <span>
+            Agenda
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="admin-nav-item"
+          data-section="treinos"
+          type="button"
+        >
+
+          <i class="fa-solid fa-dumbbell"></i>
+
+          <span>
+            Treinos
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="admin-nav-item"
+          data-section="financeiro"
+          type="button"
+        >
+
+          <i class="fa-solid fa-wallet"></i>
+
+          <span>
+            Financeiro
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="admin-nav-item"
+          data-section="configuracoes"
+          type="button"
+        >
+
+          <i class="fa-solid fa-gear"></i>
+
+          <span>
+            Configurações
+          </span>
+
+        </button>
+
+
+      </nav>
+
+
+
+      <!-- RODAPÉ SIDEBAR -->
+
+      <div class="admin-sidebar-footer">
+
+        <button
+          id="logoutBtn"
+          class="admin-logout"
+          type="button"
+        >
+
+          <i class="fa-solid fa-right-from-bracket"></i>
+
+          <span>
+            Sair
+          </span>
+
+        </button>
+
+
+        <a
+          href="index.html"
+          class="admin-site-link"
+        >
+
+          <i class="fa-solid fa-globe"></i>
+
+          Ver site
+
+        </a>
+
+      </div>
+
+
+    </aside>
+
+
+
+    <!-- ===================================================
+         ÁREA PRINCIPAL
+    ==================================================== -->
+
+    <main class="admin-main">
+
+
+      <!-- HEADER -->
+
+      <header class="admin-header">
+
+
+        <div>
+
+          <p
+            class="eyebrow"
+            id="adminSectionEyebrow"
+          >
+            PAINEL
+          </p>
+
+          <h1 id="adminSectionTitle">
+            Dashboard
+          </h1>
+
+        </div>
+
+
+        <div class="admin-header-status">
+
+          <span class="admin-status-dot"></span>
+
+          Firebase conectado
+
+        </div>
+
+
+      </header>
+
+
+
+      <!-- =================================================
+           DASHBOARD
+      ================================================== -->
+
+      <section
+        id="section-dashboard"
+        class="admin-section active"
       >
 
 
-        <!-- CABEÇALHO DA AGENDA -->
+        <div class="admin-welcome">
 
-        <div class="agenda-top">
+          <p class="eyebrow">
+            BEM-VINDO
+          </p>
+
+          <h2>
+            Olá, Alan! 👋
+          </h2>
+
+          <p>
+            Aqui você acompanha a rotina do Studio
+            e gerencia seus alunos.
+          </p>
+
+        </div>
+
+
+
+        <!-- CARDS -->
+
+        <div class="admin-stats">
+
+
+          <article class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+
+              <i class="fa-solid fa-users"></i>
+
+            </div>
+
+            <div>
+
+              <span>
+                Alunos ativos
+              </span>
+
+              <strong id="dashboardStudents">
+                0
+              </strong>
+
+            </div>
+
+          </article>
+
+
+
+          <article class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+
+              <i class="fa-solid fa-calendar-check"></i>
+
+            </div>
+
+            <div>
+
+              <span>
+              Agendamentos hoje
+            </span>
+
+              <strong id="dashboardToday">
+                0
+              </strong>
+
+            </div>
+
+          </article>
+
+
+
+          <article class="admin-stat-card">
+
+            <div class="admin-stat-icon">
+
+              <i class="fa-solid fa-clock"></i>
+
+            </div>
+
+            <div>
+
+              <span>
+                Próximo horário
+              </span>
+
+              <strong id="dashboardNext">
+                —
+              </strong>
+
+            </div>
+
+          </article>
+
+
+        </div>
+
+
+
+        <!-- ACESSO RÁPIDO -->
+
+        <div class="admin-card">
+
+          <div class="admin-card-header">
+
+            <div>
+
+              <p class="eyebrow">
+                ACESSO RÁPIDO
+              </p>
+
+              <h3>
+                O que você deseja fazer?
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <div class="admin-quick-actions">
+
+
+            <button
+              class="admin-quick-action"
+              data-section="alunos"
+              type="button"
+            >
+
+              <i class="fa-solid fa-user-plus"></i>
+
+              <span>
+                Cadastrar aluno
+              </span>
+
+            </button>
+
+
+
+            <button
+              class="admin-quick-action"
+              data-section="agenda"
+              type="button"
+            >
+
+              <i class="fa-solid fa-calendar-plus"></i>
+
+              <span>
+                Novo agendamento
+              </span>
+
+            </button>
+
+
+
+            <button
+              class="admin-quick-action"
+              data-section="treinos"
+              type="button"
+            >
+
+              <i class="fa-solid fa-dumbbell"></i>
+
+              <span>
+                Gerenciar treinos
+              </span>
+
+            </button>
+
+
+          </div>
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =================================================
+           ALUNOS
+      ================================================== -->
+
+      <section
+        id="section-alunos"
+        class="admin-section"
+        hidden
+      >
+
+        <div class="admin-page-header">
 
           <div>
 
             <p class="eyebrow">
-              PAINEL
+              GESTÃO
+            </p>
+
+            <h2>
+              Alunos
+            </h2>
+
+            <p>
+              Cadastre e acompanhe os alunos do Studio.
+            </p>
+
+          </div>
+
+
+          <button
+            id="newStudentBtn"
+            class="btn btn-primary"
+            type="button"
+          >
+
+            <i class="fa-solid fa-plus"></i>
+
+            Novo aluno
+
+          </button>
+
+        </div>
+
+
+        <div class="admin-card">
+
+          <div class="admin-empty-state">
+
+            <i class="fa-solid fa-users"></i>
+
+            <h3>
+              Cadastro de alunos
+            </h3>
+
+            <p>
+              Em breve você poderá cadastrar os alunos
+              diretamente por aqui.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           AGENDA
+      ================================================== -->
+
+      <section
+        id="section-agenda"
+        class="admin-section"
+        hidden
+      >
+
+
+        <div class="admin-page-header">
+
+          <div>
+
+            <p class="eyebrow">
+              ORGANIZAÇÃO
             </p>
 
             <h2>
               Agenda
             </h2>
 
+            <p>
+              Gerencie os horários e agendamentos do Studio.
+            </p>
+
           </div>
-
-
-          <button
-            id="logoutBtn"
-            class="btn btn-small"
-            type="button"
-          >
-
-            Sair
-
-          </button>
 
         </div>
 
 
-
-        <!-- STATUS FIREBASE -->
 
         <div
           class="firebase-status"
           id="firebaseStatus"
         >
-
           Verificando Firebase...
-
         </div>
 
 
-
-        <!-- =================================================
-             FORMULÁRIO DE AGENDAMENTO
-        ================================================== -->
 
         <form
           id="appointmentForm"
           class="appointment-form"
         >
 
-
-          <!-- NOME -->
 
           <label>
 
@@ -243,8 +736,6 @@
 
 
 
-          <!-- DATA -->
-
           <label>
 
             Data
@@ -259,8 +750,6 @@
 
 
 
-          <!-- HORÁRIO -->
-
           <label>
 
             Horário
@@ -274,8 +763,6 @@
           </label>
 
 
-
-          <!-- SERVIÇO -->
 
           <label>
 
@@ -301,8 +788,6 @@
 
 
 
-          <!-- OBSERVAÇÃO -->
-
           <label class="full">
 
             Observação
@@ -316,12 +801,12 @@
 
 
 
-          <!-- BOTÃO -->
-
           <button
             class="btn btn-primary full"
             type="submit"
           >
+
+            <i class="fa-solid fa-calendar-plus"></i>
 
             Adicionar à agenda
 
@@ -331,10 +816,6 @@
         </form>
 
 
-
-        <!-- =================================================
-             LISTA DE HORÁRIOS
-        ================================================== -->
 
         <div class="agenda-toolbar">
 
@@ -363,10 +844,169 @@
         ></div>
 
 
-      </div>
+      </section>
 
 
-    </section>
+
+      <!-- =================================================
+           TREINOS
+      ================================================== -->
+
+      <section
+        id="section-treinos"
+        class="admin-section"
+        hidden
+      >
+
+        <div class="admin-page-header">
+
+          <div>
+
+            <p class="eyebrow">
+              TREINAMENTO
+            </p>
+
+            <h2>
+              Treinos
+            </h2>
+
+            <p>
+              Monte e acompanhe os treinos personalizados.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="admin-card">
+
+          <div class="admin-empty-state">
+
+            <i class="fa-solid fa-dumbbell"></i>
+
+            <h3>
+              Sistema de treinos
+            </h3>
+
+            <p>
+              Vamos construir esta área na próxima etapa.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           FINANCEIRO
+      ================================================== -->
+
+      <section
+        id="section-financeiro"
+        class="admin-section"
+        hidden
+      >
+
+        <div class="admin-page-header">
+
+          <div>
+
+            <p class="eyebrow">
+              CONTROLE
+            </p>
+
+            <h2>
+              Financeiro
+            </h2>
+
+            <p>
+              Controle pagamentos e mensalidades.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="admin-card">
+
+          <div class="admin-empty-state">
+
+            <i class="fa-solid fa-wallet"></i>
+
+            <h3>
+              Controle financeiro
+            </h3>
+
+            <p>
+              Vamos construir esta área posteriormente.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           CONFIGURAÇÕES
+      ================================================== -->
+
+      <section
+        id="section-configuracoes"
+        class="admin-section"
+        hidden
+      >
+
+        <div class="admin-page-header">
+
+          <div>
+
+            <p class="eyebrow">
+              SISTEMA
+            </p>
+
+            <h2>
+              Configurações
+            </h2>
+
+            <p>
+              Configurações do Studio e do sistema.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="admin-card">
+
+          <div class="admin-empty-state">
+
+            <i class="fa-solid fa-gear"></i>
+
+            <h3>
+              Configurações
+            </h3>
+
+            <p>
+              Esta área será desenvolvida conforme o sistema crescer.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+    </main>
 
 
   </div>

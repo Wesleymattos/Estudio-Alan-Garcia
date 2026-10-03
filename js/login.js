@@ -1,4 +1,17 @@
-import { firebaseConfig, FIREBASE_ENABLED } from "./firebase-config.js";
+// ============================================================
+// STUDIO ALAN GARCIA
+// LOGIN + PAINEL ADMINISTRATIVO + FIREBASE
+// ============================================================
+
+import {
+  firebaseConfig,
+  FIREBASE_ENABLED
+} from "./firebase-config.js";
+
+
+// ============================================================
+// VARIÁVEIS
+// ============================================================
 
 let db = null;
 let auth = null;
@@ -8,9 +21,24 @@ let appointments = [];
 
 const LOCAL_KEY = "alanGarciaAgendaV1";
 
-const $ = selector => document.querySelector(selector);
 
-const status = $("#firebaseStatus");
+// ============================================================
+// ELEMENTOS
+// ============================================================
+
+const $ = (selector) => document.querySelector(selector);
+
+const loginView = $("#loginView");
+const adminView = $("#adminView");
+
+const loginForm = $("#loginForm");
+const loginEmail = $("#loginEmail");
+const loginPassword = $("#loginPassword");
+const loginMessage = $("#loginMessage");
+
+const logoutBtn = $("#logoutBtn");
+
+const firebaseStatus = $("#firebaseStatus");
 
 
 // ============================================================
@@ -20,33 +48,23 @@ const status = $("#firebaseStatus");
 async function initFirebase() {
 
   if (!FIREBASE_ENABLED) {
-    if (status) {
-      status.textContent =
+
+    console.warn("Firebase não está configurado.");
+
+    if (firebaseStatus) {
+      firebaseStatus.textContent =
         "Firebase não configurado.";
     }
 
-    throw new Error("Firebase não configurado.");
+    return;
   }
 
   try {
 
     const [
-      { initializeApp },
-      {
-        getAuth,
-        signInWithEmailAndPassword,
-        signOut,
-        onAuthStateChanged
-      },
-      {
-        getDatabase,
-        ref,
-        push,
-        set,
-        onValue,
-        remove,
-        get
-      }
+      firebaseApp,
+      firebaseAuth,
+      firebaseDatabase
     ] = await Promise.all([
 
       import(
@@ -64,36 +82,57 @@ async function initFirebase() {
     ]);
 
 
-    const app = initializeApp(firebaseConfig);
+    const app = firebaseApp.initializeApp(firebaseConfig);
 
-    auth = getAuth(app);
+    auth = firebaseAuth.getAuth(app);
 
-    db = getDatabase(app);
+    db = firebaseDatabase.getDatabase(app);
+
 
     firebaseFns = {
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged,
-      ref,
-      push,
-      set,
-      onValue,
-      remove,
-      get
+      signInWithEmailAndPassword:
+        firebaseAuth.signInWithEmailAndPassword,
+
+      signOut:
+        firebaseAuth.signOut,
+
+      onAuthStateChanged:
+        firebaseAuth.onAuthStateChanged,
+
+      ref:
+        firebaseDatabase.ref,
+
+      get:
+        firebaseDatabase.get,
+
+      set:
+        firebaseDatabase.set,
+
+      push:
+        firebaseDatabase.push,
+
+      remove:
+        firebaseDatabase.remove
     };
 
 
-    if (status) {
-      status.textContent =
+    if (firebaseStatus) {
+
+      firebaseStatus.textContent =
         "Firebase conectado.";
+
     }
 
 
     firebaseFns.onAuthStateChanged(
       auth,
-      handleAuthStateChanged
+      handleAuthState
     );
 
+
+    console.log(
+      "Firebase inicializado com sucesso."
+    );
 
   } catch (error) {
 
@@ -102,26 +141,26 @@ async function initFirebase() {
       error
     );
 
-    if (status) {
-      status.textContent =
+    if (firebaseStatus) {
+
+      firebaseStatus.textContent =
         "Erro ao conectar ao Firebase.";
+
     }
 
-    throw error;
   }
 }
 
 
 // ============================================================
-// VERIFICAR USUÁRIO LOGADO
+// ESTADO DE AUTENTICAÇÃO
 // ============================================================
 
-async function handleAuthStateChanged(user) {
+async function handleAuthState(user) {
 
   if (!user) {
 
-    $("#loginView").hidden = false;
-    $("#agendaView").hidden = true;
+    showLogin();
 
     return;
   }
@@ -134,14 +173,20 @@ async function handleAuthStateChanged(user) {
       `usuarios/${user.uid}`
     );
 
-    const snapshot = await firebaseFns.get(userRef);
+    const snapshot =
+      await firebaseFns.get(userRef);
+
 
     if (!snapshot.exists()) {
 
+      console.warn(
+        "Usuário autenticado, mas não encontrado em /usuarios."
+      );
+
       await firebaseFns.signOut(auth);
 
-      showLoginMessage(
-        "Usuário autenticado, mas não cadastrado no sistema."
+      showLogin(
+        "Usuário sem cadastro administrativo."
       );
 
       return;
@@ -151,47 +196,32 @@ async function handleAuthStateChanged(user) {
     const userData = snapshot.val();
 
 
-    if (userData.ativo !== true) {
+    if (
+      userData.ativo !== true ||
+      userData.tipo !== "admin"
+    ) {
+
+      console.warn(
+        "Usuário sem permissão de administrador."
+      );
 
       await firebaseFns.signOut(auth);
 
-      showLoginMessage(
-        "Este usuário está desativado."
+      showLogin(
+        "Este usuário não possui permissão de administrador."
       );
 
       return;
     }
 
 
-    if (userData.tipo !== "admin") {
-
-      await firebaseFns.signOut(auth);
-
-      showLoginMessage(
-        "Este usuário não possui acesso administrativo."
-      );
-
-      return;
-    }
-
-
-    console.log(
-      "Usuário autenticado:",
-      user.email
-    );
-
-    console.log(
-      "UID:",
-      user.uid
-    );
-
-    console.log(
-      "Dados do usuário:",
-      userData
+    updateAdminUser(
+      userData,
+      user
     );
 
 
-    showAgenda();
+    showAdmin();
 
 
   } catch (error) {
@@ -201,10 +231,84 @@ async function handleAuthStateChanged(user) {
       error
     );
 
-    showLoginMessage(
+    showLogin(
       "Não foi possível verificar seu acesso."
     );
+
   }
+}
+
+
+// ============================================================
+// MOSTRAR LOGIN
+// ============================================================
+
+function showLogin(message = "") {
+
+  if (loginView) {
+    loginView.hidden = false;
+  }
+
+  if (adminView) {
+    adminView.hidden = true;
+  }
+
+
+  closeMobileMenu();
+
+
+  if (loginMessage) {
+
+    loginMessage.textContent = message;
+
+  }
+}
+
+
+// ============================================================
+// MOSTRAR PAINEL
+// ============================================================
+
+function showAdmin() {
+
+  if (loginView) {
+    loginView.hidden = true;
+  }
+
+  if (adminView) {
+    adminView.hidden = false;
+  }
+
+
+  showSection("dashboard");
+
+  loadAgenda();
+
+  updateDashboard();
+
+}
+
+
+// ============================================================
+// DADOS DO ADMIN
+// ============================================================
+
+function updateAdminUser(userData, firebaseUser) {
+
+  const nameElement =
+    $("#adminUserName");
+
+
+  if (!nameElement) {
+    return;
+  }
+
+
+  nameElement.textContent =
+    userData.nome ||
+    firebaseUser.displayName ||
+    "Administrador";
+
 }
 
 
@@ -212,55 +316,56 @@ async function handleAuthStateChanged(user) {
 // LOGIN
 // ============================================================
 
-async function login() {
+async function handleLogin(event) {
 
-  const email =
-    $("#loginEmail").value.trim();
-
-  const password =
-    $("#loginPassword").value;
-
-  const msg =
-    $("#loginMessage");
-
-  const button =
-    $("#loginForm button[type='submit']");
+  event.preventDefault();
 
 
-  msg.textContent = "";
+  if (!firebaseFns || !auth) {
 
+    if (loginMessage) {
 
-  if (!email || !password) {
+      loginMessage.textContent =
+        "Firebase ainda não foi inicializado.";
 
-    msg.textContent =
-      "Informe o e-mail e a senha.";
+    }
 
     return;
   }
 
 
-  if (!auth) {
+  const email =
+    loginEmail?.value.trim();
 
-    msg.textContent =
-      "Firebase ainda não foi inicializado.";
+  const password =
+    loginPassword?.value;
 
+
+  if (!email || !password) {
     return;
+  }
+
+
+  if (loginMessage) {
+
+    loginMessage.textContent =
+      "Entrando...";
+
   }
 
 
   try {
-
-    button.disabled = true;
-
-    button.textContent =
-      "Entrando...";
-
 
     await firebaseFns.signInWithEmailAndPassword(
       auth,
       email,
       password
     );
+
+
+    if (loginMessage) {
+      loginMessage.textContent = "";
+    }
 
 
   } catch (error) {
@@ -271,175 +376,453 @@ async function login() {
     );
 
 
+    let message =
+      "Não foi possível entrar.";
+
+
     switch (error.code) {
 
       case "auth/invalid-credential":
-
-        msg.textContent =
-          "E-mail ou senha incorretos.";
-
-        break;
-
-
+      case "auth/wrong-password":
       case "auth/user-not-found":
 
-        msg.textContent =
-          "Usuário não encontrado.";
-
-        break;
-
-
-      case "auth/wrong-password":
-
-        msg.textContent =
-          "Senha incorreta.";
-
-        break;
-
-
-      case "auth/invalid-email":
-
-        msg.textContent =
-          "E-mail inválido.";
+        message =
+          "E-mail ou senha incorretos.";
 
         break;
 
 
       case "auth/too-many-requests":
 
-        msg.textContent =
+        message =
           "Muitas tentativas. Aguarde alguns minutos.";
+
+        break;
+
+
+      case "auth/invalid-email":
+
+        message =
+          "Digite um e-mail válido.";
 
         break;
 
 
       default:
 
-        msg.textContent =
-          "Não foi possível realizar o login.";
+        message =
+          "Erro ao entrar. Verifique sua conexão.";
 
         break;
+
     }
 
 
-    button.disabled = false;
+    if (loginMessage) {
 
-    button.textContent =
-      "Entrar na agenda";
+      loginMessage.textContent =
+        message;
+
+    }
+
   }
+
 }
 
 
 // ============================================================
-// MOSTRAR AGENDA
+// LOGOUT
 // ============================================================
 
-function showAgenda() {
+async function logout() {
 
-  $("#loginView").hidden = true;
-
-  $("#agendaView").hidden = false;
-
-  loadAgenda();
-}
-
-
-// ============================================================
-// CARREGAR AGENDA
-// ============================================================
-
-function loadAgenda() {
-
-  if (!db) {
-
-    loadLocal();
-
+  if (!auth || !firebaseFns) {
     return;
   }
 
 
-  firebaseFns.onValue(
+  try {
 
-    firebaseFns.ref(
-      db,
-      "agenda"
-    ),
+    await firebaseFns.signOut(auth);
 
-    snapshot => {
+    showLogin();
 
-      const data =
-        snapshot.val() || {};
-
-
-      appointments =
-        Object.entries(data).map(
-          ([id, value]) => ({
-            id,
-            ...value
-          })
-        );
-
-
-      renderAppointments();
+    if (loginForm) {
+      loginForm.reset();
     }
 
-  );
+  } catch (error) {
+
+    console.error(
+      "Erro ao sair:",
+      error
+    );
+
+  }
+
 }
 
 
 // ============================================================
-// MODO LOCAL
+// NAVEGAÇÃO DO PAINEL
 // ============================================================
 
-function loadLocal() {
+function showSection(sectionName) {
 
-  appointments =
-    JSON.parse(
-      localStorage.getItem(
-        LOCAL_KEY
-      ) || "[]"
+  const sections =
+    document.querySelectorAll(
+      ".admin-section"
     );
 
 
-  renderAppointments();
+  const navItems =
+    document.querySelectorAll(
+      ".admin-nav-item"
+    );
+
+
+  sections.forEach(section => {
+
+    const isActive =
+      section.id ===
+      `section-${sectionName}`;
+
+
+    section.classList.toggle(
+      "active",
+      isActive
+    );
+
+    section.hidden =
+      !isActive;
+
+  });
+
+
+  navItems.forEach(button => {
+
+    button.classList.toggle(
+      "active",
+      button.dataset.section === sectionName
+    );
+
+  });
+
+
+  updateSectionHeader(
+    sectionName
+  );
+
+
+  closeMobileMenu();
+
+
+  if (sectionName === "agenda") {
+
+    loadAgenda();
+
+  }
+
+
+  if (sectionName === "dashboard") {
+
+    updateDashboard();
+
+  }
+
 }
 
 
-function saveLocal() {
+// ============================================================
+// HEADER DA SEÇÃO
+// ============================================================
+
+function updateSectionHeader(sectionName) {
+
+  const eyebrow =
+    $("#adminSectionEyebrow");
+
+  const title =
+    $("#adminSectionTitle");
+
+
+  const sections = {
+
+    dashboard: {
+      eyebrow: "PAINEL",
+      title: "Dashboard"
+    },
+
+    alunos: {
+      eyebrow: "GESTÃO",
+      title: "Alunos"
+    },
+
+    agenda: {
+      eyebrow: "ORGANIZAÇÃO",
+      title: "Agenda"
+    },
+
+    treinos: {
+      eyebrow: "TREINAMENTO",
+      title: "Treinos"
+    },
+
+    financeiro: {
+      eyebrow: "CONTROLE",
+      title: "Financeiro"
+    },
+
+    configuracoes: {
+      eyebrow: "SISTEMA",
+      title: "Configurações"
+    }
+
+  };
+
+
+  const data =
+    sections[sectionName] ||
+    sections.dashboard;
+
+
+  if (eyebrow) {
+    eyebrow.textContent =
+      data.eyebrow;
+  }
+
+
+  if (title) {
+    title.textContent =
+      data.title;
+  }
+
+}
+
+
+// ============================================================
+// AGENDA
+// ============================================================
+
+async function loadAgenda() {
+
+  if (
+    FIREBASE_ENABLED &&
+    db &&
+    firebaseFns &&
+    auth?.currentUser
+  ) {
+
+    try {
+
+      const agendaRef =
+        firebaseFns.ref(
+          db,
+          "agenda"
+        );
+
+
+      const snapshot =
+        await firebaseFns.get(
+          agendaRef
+        );
+
+
+      if (snapshot.exists()) {
+
+        const data =
+          snapshot.val();
+
+
+        appointments =
+          Object.entries(data)
+            .map(([id, item]) => ({
+              id,
+              ...item
+            }));
+
+      } else {
+
+        appointments = [];
+
+      }
+
+
+      renderAppointments();
+
+      return;
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao carregar agenda:",
+        error
+      );
+
+    }
+
+  }
+
+
+  // Fallback local
+
+  try {
+
+    appointments =
+      JSON.parse(
+        localStorage.getItem(
+          LOCAL_KEY
+        ) || "[]"
+      );
+
+  } catch {
+
+    appointments = [];
+
+  }
+
+
+  renderAppointments();
+
+}
+
+
+// ============================================================
+// SALVAR AGENDAMENTO
+// ============================================================
+
+async function addAppointment(appointment) {
+
+  if (
+    FIREBASE_ENABLED &&
+    db &&
+    firebaseFns &&
+    auth?.currentUser
+  ) {
+
+    try {
+
+      const agendaRef =
+        firebaseFns.ref(
+          db,
+          "agenda"
+        );
+
+
+      const newRef =
+        firebaseFns.push(
+          agendaRef
+        );
+
+
+      await firebaseFns.set(
+        newRef,
+        appointment
+      );
+
+
+      appointment.id =
+        newRef.key;
+
+
+      appointments.push(
+        appointment
+      );
+
+
+      renderAppointments();
+
+      return;
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao salvar agendamento:",
+        error
+      );
+
+    }
+
+  }
+
+
+  // Fallback local
+
+  appointment.id =
+    Date.now().toString();
+
+
+  appointments.push(
+    appointment
+  );
+
 
   localStorage.setItem(
     LOCAL_KEY,
     JSON.stringify(appointments)
   );
+
+
+  renderAppointments();
+
 }
 
 
 // ============================================================
-// FORMATAR DATA
+// EXCLUIR AGENDAMENTO
 // ============================================================
 
-function formatDate(date) {
+async function deleteAppointment(id) {
 
-  if (!date) {
-    return "";
+  if (
+    FIREBASE_ENABLED &&
+    db &&
+    firebaseFns &&
+    auth?.currentUser
+  ) {
+
+    try {
+
+      await firebaseFns.remove(
+        firebaseFns.ref(
+          db,
+          `agenda/${id}`
+        )
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao excluir agendamento:",
+        error
+      );
+
+    }
+
   }
 
 
-  return new Intl.DateTimeFormat(
-    "pt-BR",
-    {
-      dateStyle: "short"
-    }
-  ).format(
-    new Date(
-      date + "T12:00:00"
-    )
+  appointments =
+    appointments.filter(
+      item => item.id !== id
+    );
+
+
+  localStorage.setItem(
+    LOCAL_KEY,
+    JSON.stringify(appointments)
   );
+
+
+  renderAppointments();
+
+  updateDashboard();
+
 }
 
 
 // ============================================================
-// RENDERIZAR AGENDA
+// RENDER AGENDA
 // ============================================================
 
 function renderAppointments() {
@@ -453,20 +836,19 @@ function renderAppointments() {
   }
 
 
-  const sorted =
-    [...appointments].sort(
-      (a, b) =>
-        `${a.date}${a.time}`.localeCompare(
-          `${b.date}${b.time}`
-        )
-    );
-
-
-  if (!sorted.length) {
+  if (!appointments.length) {
 
     list.innerHTML = `
-      <div class="empty-state">
-        Nenhum horário cadastrado ainda.
+      <div class="admin-empty-state">
+        <i class="fa-solid fa-calendar-xmark"></i>
+
+        <h3>
+          Nenhum horário encontrado
+        </h3>
+
+        <p>
+          Os próximos agendamentos aparecerão aqui.
+        </p>
       </div>
     `;
 
@@ -474,25 +856,35 @@ function renderAppointments() {
   }
 
 
+  const sorted =
+    [...appointments].sort(
+      (a, b) =>
+        `${a.date} ${a.time}`.localeCompare(
+          `${b.date} ${b.time}`
+        )
+    );
+
+
   list.innerHTML =
     sorted.map(item => `
 
-      <article class="appointment-card">
+      <article class="appointment-item">
 
-        <div class="appointment-date">
-          <b>${formatDate(item.date)}</b>
-          <span>${item.time}</span>
-        </div>
+        <div class="appointment-main">
 
-        <div class="appointment-info">
+          <strong>
+            ${escapeHtml(item.clientName)}
+          </strong>
 
-          <h4>
-            ${escapeHtml(item.name)}
-          </h4>
+          <span>
+            ${formatDate(item.date)}
+            às
+            ${escapeHtml(item.time)}
+          </span>
 
-          <p>
-            ${escapeHtml(item.service)}
-          </p>
+          <small>
+            ${escapeHtml(item.service || "")}
+          </small>
 
           ${
             item.notes
@@ -503,11 +895,12 @@ function renderAppointments() {
         </div>
 
         <button
-          class="delete-appointment"
-          data-id="${item.id}"
-          aria-label="Excluir"
+          class="appointment-delete"
+          type="button"
+          data-delete-appointment="${item.id}"
+          aria-label="Excluir agendamento"
         >
-          ×
+          <i class="fa-solid fa-trash"></i>
         </button>
 
       </article>
@@ -517,200 +910,264 @@ function renderAppointments() {
 
   list
     .querySelectorAll(
-      ".delete-appointment"
+      "[data-delete-appointment]"
     )
     .forEach(button => {
 
       button.addEventListener(
         "click",
-        async () => {
+        () => {
 
           const id =
-            button.dataset.id;
+            button.dataset.deleteAppointment;
 
-
-          if (db) {
-
-            await firebaseFns.remove(
-              firebaseFns.ref(
-                db,
-                `agenda/${id}`
-              )
-            );
-
-          } else {
-
-            appointments =
-              appointments.filter(
-                item =>
-                  item.id !== id
-              );
-
-            saveLocal();
-
-            renderAppointments();
-          }
+          deleteAppointment(id);
 
         }
       );
 
     });
+
 }
 
 
 // ============================================================
-// SEGURANÇA HTML
+// DASHBOARD
 // ============================================================
 
-function escapeHtml(value = "") {
+async function updateDashboard() {
 
-  return String(value).replace(
-    /[&<>"']/g,
-    character =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      })[character]
-  );
-}
+  let studentsCount = 0;
 
 
-// ============================================================
-// MENSAGEM DE LOGIN
-// ============================================================
+  // -----------------------------------------
+  // ALUNOS
+  // -----------------------------------------
 
-function showLoginMessage(message) {
+  if (
+    FIREBASE_ENABLED &&
+    db &&
+    firebaseFns &&
+    auth?.currentUser
+  ) {
 
-  const msg =
-    $("#loginMessage");
+    try {
 
-  if (msg) {
-    msg.textContent = message;
-  }
-}
+      const studentsRef =
+        firebaseFns.ref(
+          db,
+          "alunos"
+        );
 
 
-// ============================================================
-// LOGOUT
-// ============================================================
+      const snapshot =
+        await firebaseFns.get(
+          studentsRef
+        );
 
-async function logout() {
 
-  try {
+      if (snapshot.exists()) {
 
-    if (auth) {
+        const students =
+          snapshot.val();
 
-      await firebaseFns.signOut(
-        auth
+
+        studentsCount =
+          Object.values(students)
+            .filter(
+              student =>
+                student &&
+                student.status !== "inativo"
+            )
+            .length;
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao carregar alunos:",
+        error
       );
 
     }
 
-  } catch (error) {
+  }
 
-    console.error(
-      "Erro ao sair:",
-      error
-    );
+
+  const studentsElement =
+    $("#dashboardStudents");
+
+
+  if (studentsElement) {
+
+    studentsElement.textContent =
+      studentsCount;
 
   }
 
-  $("#agendaView").hidden = true;
 
-  $("#loginView").hidden = false;
+  // -----------------------------------------
+  // AGENDA
+  // -----------------------------------------
 
-  $("#loginForm").reset();
+  const today =
+    new Date();
 
-  $("#loginMessage").textContent = "";
+
+  const todayString =
+    today.toISOString()
+      .split("T")[0];
+
+
+  const todayAppointments =
+    appointments.filter(
+      item =>
+        item.date === todayString
+    );
+
+
+  const todayElement =
+    $("#dashboardToday");
+
+
+  if (todayElement) {
+
+    todayElement.textContent =
+      todayAppointments.length;
+
+  }
+
+
+  // -----------------------------------------
+  // PRÓXIMO HORÁRIO
+  // -----------------------------------------
+
+  const now =
+    new Date();
+
+
+  const futureAppointments =
+    appointments
+      .filter(item => {
+
+        const dateTime =
+          new Date(
+            `${item.date}T${item.time}`
+          );
+
+        return dateTime >= now;
+
+      })
+      .sort((a, b) => {
+
+        const dateA =
+          new Date(
+            `${a.date}T${a.time}`
+          );
+
+        const dateB =
+          new Date(
+            `${b.date}T${b.time}`
+          );
+
+        return dateA - dateB;
+
+      });
+
+
+  const nextElement =
+    $("#dashboardNext");
+
+
+  if (nextElement) {
+
+    if (futureAppointments.length) {
+
+      nextElement.textContent =
+        futureAppointments[0].time;
+
+    } else {
+
+      nextElement.textContent =
+        "—";
+
+    }
+
+  }
+
 }
 
 
 // ============================================================
-// ADICIONAR AGENDAMENTO
+// NOVO ALUNO
 // ============================================================
 
-async function addAppointment(event) {
+function handleNewStudent() {
+
+  alert(
+    "O cadastro de alunos será implementado na próxima etapa."
+  );
+
+}
+
+
+// ============================================================
+// FORMULÁRIO DE AGENDAMENTO
+// ============================================================
+
+async function handleAppointmentSubmit(event) {
 
   event.preventDefault();
 
 
-  const item = {
+  const clientName =
+    $("#clientName")?.value.trim();
 
-    name:
-      $("#clientName")
-        .value
-        .trim(),
+  const date =
+    $("#appointmentDate")?.value;
 
-    date:
-      $("#appointmentDate")
-        .value,
+  const time =
+    $("#appointmentTime")?.value;
 
-    time:
-      $("#appointmentTime")
-        .value,
+  const service =
+    $("#appointmentService")?.value;
 
-    service:
-      $("#appointmentService")
-        .value,
+  const notes =
+    $("#appointmentNotes")?.value.trim();
 
-    notes:
-      $("#appointmentNotes")
-        .value
-        .trim(),
+
+  if (!clientName || !date || !time) {
+
+    return;
+
+  }
+
+
+  const appointment = {
+
+    clientName,
+    date,
+    time,
+    service,
+    notes,
 
     createdAt:
       new Date().toISOString()
+
   };
 
 
-  try {
-
-    if (db) {
-
-      const newRef =
-        firebaseFns.push(
-          firebaseFns.ref(
-            db,
-            "agenda"
-          )
-        );
+  await addAppointment(
+    appointment
+  );
 
 
-      await firebaseFns.set(
-        newRef,
-        item
-      );
-
-    } else {
-
-      item.id =
-        crypto.randomUUID();
-
-      appointments.push(item);
-
-      saveLocal();
-
-      renderAppointments();
-    }
+  event.target.reset();
 
 
-    event.target.reset();
+  updateDashboard();
 
-
-  } catch (error) {
-
-    console.error(
-      "Erro ao salvar agendamento:",
-      error
-    );
-
-    alert(
-      "Não foi possível salvar o agendamento."
-    );
-  }
 }
 
 
@@ -718,30 +1175,149 @@ async function addAppointment(event) {
 // LIMPAR AGENDA LOCAL
 // ============================================================
 
-function clearDemoAgenda() {
+function clearLocalAgenda() {
 
-  if (db) {
-
-    alert(
-      "Para segurança, a limpeza em massa não está habilitada no Firebase."
-    );
-
-    return;
-  }
+  localStorage.removeItem(
+    LOCAL_KEY
+  );
 
 
   if (
-    confirm(
-      "Limpar todos os horários locais?"
-    )
+    !FIREBASE_ENABLED ||
+    !auth?.currentUser
   ) {
 
     appointments = [];
 
-    saveLocal();
-
     renderAppointments();
+
+    updateDashboard();
+
   }
+
+}
+
+
+// ============================================================
+// MENU MOBILE
+// ============================================================
+
+function openMobileMenu() {
+
+  const sidebar =
+    $(".admin-sidebar");
+
+  const overlay =
+    $("#adminOverlay");
+
+
+  if (sidebar) {
+
+    sidebar.classList.add(
+      "mobile-open"
+    );
+
+  }
+
+
+  if (overlay) {
+
+    overlay.classList.add(
+      "active"
+    );
+
+  }
+
+}
+
+
+function closeMobileMenu() {
+
+  const sidebar =
+    $(".admin-sidebar");
+
+  const overlay =
+    $("#adminOverlay");
+
+
+  if (sidebar) {
+
+    sidebar.classList.remove(
+      "mobile-open"
+    );
+
+  }
+
+
+  if (overlay) {
+
+    overlay.classList.remove(
+      "active"
+    );
+
+  }
+
+}
+
+
+function toggleMobileMenu() {
+
+  const sidebar =
+    $(".admin-sidebar");
+
+
+  if (
+    sidebar &&
+    sidebar.classList.contains(
+      "mobile-open"
+    )
+  ) {
+
+    closeMobileMenu();
+
+  } else {
+
+    openMobileMenu();
+
+  }
+
+}
+
+
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
+
+function formatDate(dateString) {
+
+  if (!dateString) {
+    return "";
+  }
+
+
+  const parts =
+    dateString.split("-");
+
+
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+}
+
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
 }
 
 
@@ -749,42 +1325,198 @@ function clearDemoAgenda() {
 // EVENTOS
 // ============================================================
 
-$("#loginForm")
-  .addEventListener(
-    "submit",
-    event => {
-
-      event.preventDefault();
-
-      login();
-    }
-  );
+function initEvents() {
 
 
-$("#logoutBtn")
-  .addEventListener(
-    "click",
-    logout
-  );
+  // -----------------------------------------
+  // LOGIN
+  // -----------------------------------------
+
+  if (loginForm) {
+
+    loginForm.addEventListener(
+      "submit",
+      handleLogin
+    );
+
+  }
 
 
-$("#appointmentForm")
-  .addEventListener(
-    "submit",
-    addAppointment
-  );
+  // -----------------------------------------
+  // LOGOUT
+  // -----------------------------------------
+
+  if (logoutBtn) {
+
+    logoutBtn.addEventListener(
+      "click",
+      logout
+    );
+
+  }
 
 
-$("#clearDemoBtn")
-  .addEventListener(
-    "click",
-    clearDemoAgenda
-  );
+  // -----------------------------------------
+  // MENU LATERAL
+  // -----------------------------------------
+
+  document
+    .querySelectorAll(
+      ".admin-nav-item"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          showSection(
+            button.dataset.section
+          );
+
+        }
+      );
+
+    });
+
+
+  // -----------------------------------------
+  // ACESSO RÁPIDO
+  // -----------------------------------------
+
+  document
+    .querySelectorAll(
+      ".admin-quick-action"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const section =
+            button.dataset.section;
+
+
+          showSection(section);
+
+        }
+      );
+
+    });
+
+
+  // -----------------------------------------
+  // NOVO ALUNO
+  // -----------------------------------------
+
+  const newStudentBtn =
+    $("#newStudentBtn");
+
+
+  if (newStudentBtn) {
+
+    newStudentBtn.addEventListener(
+      "click",
+      handleNewStudent
+    );
+
+  }
+
+
+  // -----------------------------------------
+  // AGENDA
+  // -----------------------------------------
+
+  const appointmentForm =
+    $("#appointmentForm");
+
+
+  if (appointmentForm) {
+
+    appointmentForm.addEventListener(
+      "submit",
+      handleAppointmentSubmit
+    );
+
+  }
+
+
+  // -----------------------------------------
+  // LIMPAR AGENDA
+  // -----------------------------------------
+
+  const clearDemoBtn =
+    $("#clearDemoBtn");
+
+
+  if (clearDemoBtn) {
+
+    clearDemoBtn.addEventListener(
+      "click",
+      clearLocalAgenda
+    );
+
+  }
+
+
+  // -----------------------------------------
+  // MENU MOBILE
+  // -----------------------------------------
+
+  const menuToggle =
+    $("#adminMenuToggle");
+
+
+  const overlay =
+    $("#adminOverlay");
+
+
+  if (menuToggle) {
+
+    menuToggle.addEventListener(
+      "click",
+      toggleMobileMenu
+    );
+
+  }
+
+
+  if (overlay) {
+
+    overlay.addEventListener(
+      "click",
+      closeMobileMenu
+    );
+
+  }
+
+
+  // Fecha o menu quando clicar em
+  // qualquer item da sidebar
+
+  document
+    .querySelectorAll(
+      ".admin-nav-item"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        closeMobileMenu
+      );
+
+    });
+
+}
 
 
 // ============================================================
 // INICIALIZAÇÃO
 // ============================================================
+
+initEvents();
+
 
 initFirebase()
   .catch(error => {
