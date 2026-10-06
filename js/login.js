@@ -4,9 +4,19 @@
 // ============================================================
 
 import {
-  firebaseConfig,
   FIREBASE_ENABLED
 } from "./firebase-config.js";
+
+import {
+  initFirebase
+} from "./firebase-app.js";
+
+
+import {
+  loadAgenda,
+  handleAppointmentSubmit,
+  clearLocalAgenda
+} from "./agenda.js";
 
 
 // ============================================================
@@ -17,9 +27,7 @@ let db = null;
 let auth = null;
 let firebaseFns = null;
 
-let appointments = [];
 
-const LOCAL_KEY = "alanGarciaAgendaV1";
 
 
 // ============================================================
@@ -39,117 +47,6 @@ const loginMessage = $("#loginMessage");
 const logoutBtn = $("#logoutBtn");
 
 const firebaseStatus = $("#firebaseStatus");
-
-
-// ============================================================
-// FIREBASE
-// ============================================================
-
-async function initFirebase() {
-
-  if (!FIREBASE_ENABLED) {
-
-    console.warn("Firebase não está configurado.");
-
-    if (firebaseStatus) {
-      firebaseStatus.textContent =
-        "Firebase não configurado.";
-    }
-
-    return;
-  }
-
-  try {
-
-    const [
-      firebaseApp,
-      firebaseAuth,
-      firebaseDatabase
-    ] = await Promise.all([
-
-      import(
-        "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"
-      ),
-
-      import(
-        "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
-      ),
-
-      import(
-        "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"
-      )
-
-    ]);
-
-
-    const app = firebaseApp.initializeApp(firebaseConfig);
-
-    auth = firebaseAuth.getAuth(app);
-
-    db = firebaseDatabase.getDatabase(app);
-
-
-    firebaseFns = {
-      signInWithEmailAndPassword:
-        firebaseAuth.signInWithEmailAndPassword,
-
-      signOut:
-        firebaseAuth.signOut,
-
-      onAuthStateChanged:
-        firebaseAuth.onAuthStateChanged,
-
-      ref:
-        firebaseDatabase.ref,
-
-      get:
-        firebaseDatabase.get,
-
-      set:
-        firebaseDatabase.set,
-
-      push:
-        firebaseDatabase.push,
-
-      remove:
-        firebaseDatabase.remove
-    };
-
-
-    if (firebaseStatus) {
-
-      firebaseStatus.textContent =
-        "Firebase conectado.";
-
-    }
-
-
-    firebaseFns.onAuthStateChanged(
-      auth,
-      handleAuthState
-    );
-
-
-    console.log(
-      "Firebase inicializado com sucesso."
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Erro ao inicializar Firebase:",
-      error
-    );
-
-    if (firebaseStatus) {
-
-      firebaseStatus.textContent =
-        "Erro ao conectar ao Firebase.";
-
-    }
-
-  }
-}
 
 
 // ============================================================
@@ -601,337 +498,6 @@ function updateSectionHeader(sectionName) {
 
 
 // ============================================================
-// AGENDA
-// ============================================================
-
-async function loadAgenda() {
-
-  if (
-    FIREBASE_ENABLED &&
-    db &&
-    firebaseFns &&
-    auth?.currentUser
-  ) {
-
-    try {
-
-      const agendaRef =
-        firebaseFns.ref(
-          db,
-          "agenda"
-        );
-
-
-      const snapshot =
-        await firebaseFns.get(
-          agendaRef
-        );
-
-
-      if (snapshot.exists()) {
-
-        const data =
-          snapshot.val();
-
-
-        appointments =
-          Object.entries(data)
-            .map(([id, item]) => ({
-              id,
-              ...item
-            }));
-
-      } else {
-
-        appointments = [];
-
-      }
-
-
-      renderAppointments();
-
-      return;
-
-    } catch (error) {
-
-      console.error(
-        "Erro ao carregar agenda:",
-        error
-      );
-
-    }
-
-  }
-
-
-  // Fallback local
-
-  try {
-
-    appointments =
-      JSON.parse(
-        localStorage.getItem(
-          LOCAL_KEY
-        ) || "[]"
-      );
-
-  } catch {
-
-    appointments = [];
-
-  }
-
-
-  renderAppointments();
-
-}
-
-
-// ============================================================
-// SALVAR AGENDAMENTO
-// ============================================================
-
-async function addAppointment(appointment) {
-
-  if (
-    FIREBASE_ENABLED &&
-    db &&
-    firebaseFns &&
-    auth?.currentUser
-  ) {
-
-    try {
-
-      const agendaRef =
-        firebaseFns.ref(
-          db,
-          "agenda"
-        );
-
-
-      const newRef =
-        firebaseFns.push(
-          agendaRef
-        );
-
-
-      await firebaseFns.set(
-        newRef,
-        appointment
-      );
-
-
-      appointment.id =
-        newRef.key;
-
-
-      appointments.push(
-        appointment
-      );
-
-
-      renderAppointments();
-
-      return;
-
-    } catch (error) {
-
-      console.error(
-        "Erro ao salvar agendamento:",
-        error
-      );
-
-    }
-
-  }
-
-
-  // Fallback local
-
-  appointment.id =
-    Date.now().toString();
-
-
-  appointments.push(
-    appointment
-  );
-
-
-  localStorage.setItem(
-    LOCAL_KEY,
-    JSON.stringify(appointments)
-  );
-
-
-  renderAppointments();
-
-}
-
-
-// ============================================================
-// EXCLUIR AGENDAMENTO
-// ============================================================
-
-async function deleteAppointment(id) {
-
-  if (
-    FIREBASE_ENABLED &&
-    db &&
-    firebaseFns &&
-    auth?.currentUser
-  ) {
-
-    try {
-
-      await firebaseFns.remove(
-        firebaseFns.ref(
-          db,
-          `agenda/${id}`
-        )
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Erro ao excluir agendamento:",
-        error
-      );
-
-    }
-
-  }
-
-
-  appointments =
-    appointments.filter(
-      item => item.id !== id
-    );
-
-
-  localStorage.setItem(
-    LOCAL_KEY,
-    JSON.stringify(appointments)
-  );
-
-
-  renderAppointments();
-
-  updateDashboard();
-
-}
-
-
-// ============================================================
-// RENDER AGENDA
-// ============================================================
-
-function renderAppointments() {
-
-  const list =
-    $("#appointmentList");
-
-
-  if (!list) {
-    return;
-  }
-
-
-  if (!appointments.length) {
-
-    list.innerHTML = `
-      <div class="admin-empty-state">
-        <i class="fa-solid fa-calendar-xmark"></i>
-
-        <h3>
-          Nenhum horário encontrado
-        </h3>
-
-        <p>
-          Os próximos agendamentos aparecerão aqui.
-        </p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  const sorted =
-    [...appointments].sort(
-      (a, b) =>
-        `${a.date} ${a.time}`.localeCompare(
-          `${b.date} ${b.time}`
-        )
-    );
-
-
-  list.innerHTML =
-    sorted.map(item => `
-
-      <article class="appointment-item">
-
-        <div class="appointment-main">
-
-          <strong>
-            ${escapeHtml(item.clientName)}
-          </strong>
-
-          <span>
-            ${formatDate(item.date)}
-            às
-            ${escapeHtml(item.time)}
-          </span>
-
-          <small>
-            ${escapeHtml(item.service || "")}
-          </small>
-
-          ${
-            item.notes
-              ? `<small>${escapeHtml(item.notes)}</small>`
-              : ""
-          }
-
-        </div>
-
-        <button
-          class="appointment-delete"
-          type="button"
-          data-delete-appointment="${item.id}"
-          aria-label="Excluir agendamento"
-        >
-          <i class="fa-solid fa-trash"></i>
-        </button>
-
-      </article>
-
-    `).join("");
-
-
-  list
-    .querySelectorAll(
-      "[data-delete-appointment]"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          const id =
-            button.dataset.deleteAppointment;
-
-          deleteAppointment(id);
-
-        }
-      );
-
-    });
-
-}
-
-
-// ============================================================
 // DASHBOARD
 // ============================================================
 
@@ -1007,185 +573,7 @@ async function updateDashboard() {
   }
 
 
-  // -----------------------------------------
-  // AGENDA
-  // -----------------------------------------
-
-  const today =
-    new Date();
-
-
-  const todayString =
-    today.toISOString()
-      .split("T")[0];
-
-
-  const todayAppointments =
-    appointments.filter(
-      item =>
-        item.date === todayString
-    );
-
-
-  const todayElement =
-    $("#dashboardToday");
-
-
-  if (todayElement) {
-
-    todayElement.textContent =
-      todayAppointments.length;
-
-  }
-
-
-  // -----------------------------------------
-  // PRÓXIMO HORÁRIO
-  // -----------------------------------------
-
-  const now =
-    new Date();
-
-
-  const futureAppointments =
-    appointments
-      .filter(item => {
-
-        const dateTime =
-          new Date(
-            `${item.date}T${item.time}`
-          );
-
-        return dateTime >= now;
-
-      })
-      .sort((a, b) => {
-
-        const dateA =
-          new Date(
-            `${a.date}T${a.time}`
-          );
-
-        const dateB =
-          new Date(
-            `${b.date}T${b.time}`
-          );
-
-        return dateA - dateB;
-
-      });
-
-
-  const nextElement =
-    $("#dashboardNext");
-
-
-  if (nextElement) {
-
-    if (futureAppointments.length) {
-
-      nextElement.textContent =
-        futureAppointments[0].time;
-
-    } else {
-
-      nextElement.textContent =
-        "—";
-
-    }
-
-  }
-
 }
-
-
-
-
-// ============================================================
-// FORMULÁRIO DE AGENDAMENTO
-// ============================================================
-
-async function handleAppointmentSubmit(event) {
-
-  event.preventDefault();
-
-
-  const clientName =
-    $("#clientName")?.value.trim();
-
-  const date =
-    $("#appointmentDate")?.value;
-
-  const time =
-    $("#appointmentTime")?.value;
-
-  const service =
-    $("#appointmentService")?.value;
-
-  const notes =
-    $("#appointmentNotes")?.value.trim();
-
-
-  if (!clientName || !date || !time) {
-
-    return;
-
-  }
-
-
-  const appointment = {
-
-    clientName,
-    date,
-    time,
-    service,
-    notes,
-
-    createdAt:
-      new Date().toISOString()
-
-  };
-
-
-  await addAppointment(
-    appointment
-  );
-
-
-  event.target.reset();
-
-
-  updateDashboard();
-
-}
-
-
-// ============================================================
-// LIMPAR AGENDA LOCAL
-// ============================================================
-
-function clearLocalAgenda() {
-
-  localStorage.removeItem(
-    LOCAL_KEY
-  );
-
-
-  if (
-    !FIREBASE_ENABLED ||
-    !auth?.currentUser
-  ) {
-
-    appointments = [];
-
-    renderAppointments();
-
-    updateDashboard();
-
-  }
-
-}
-
 
 // ============================================================
 // MENU MOBILE
@@ -1491,13 +879,38 @@ function initEvents() {
 
 initEvents();
 
-
 initFirebase()
+  .then(firebase => {
+
+    if (!firebase) {
+      return;
+    }
+
+    auth = firebase.auth;
+    db = firebase.db;
+    firebaseFns = firebase.firebaseFns;
+
+    if (firebaseStatus) {
+      firebaseStatus.textContent =
+        "Firebase conectado.";
+    }
+
+    firebaseFns.onAuthStateChanged(
+      auth,
+      handleAuthState
+    );
+
+  })
   .catch(error => {
 
     console.error(
       "Firebase não pôde ser inicializado:",
       error
     );
+
+    if (firebaseStatus) {
+      firebaseStatus.textContent =
+        "Erro ao conectar ao Firebase.";
+    }
 
   });
