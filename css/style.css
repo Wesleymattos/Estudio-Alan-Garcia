@@ -4676,3 +4676,313 @@ footer a:hover {
   }
 
 }
+
+/* ============================================================
+   AGENDA ADMINISTRATIVA — PRÓXIMOS HORÁRIOS
+   ============================================================ */
+
+#section-agenda .agenda-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 34px 0 16px;
+}
+
+#section-agenda .agenda-toolbar h3 {
+  position: relative;
+  margin: 0;
+  padding-left: 16px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+}
+
+#section-agenda .agenda-toolbar h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 4px;
+  height: 20px;
+  border-radius: 4px;
+  background: #ff6a00;
+}
+
+#section-agenda .appointment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* ============================================================
+   CARD DE CADA AGENDAMENTO
+   ============================================================ */
+
+#section-agenda .appointment-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 20px 22px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 106, 0, 0.07),
+      rgba(255, 255, 255, 0.025)
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* Barra laranja lateral */
+
+#section-agenda .appointment-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 4px;
+
+  background: #ff6a00;
+}
+
+
+/* Efeito ao passar o mouse */
+
+#section-agenda .appointment-item:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(255, 106, 0, 0.35);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 106, 0, 0.11),
+      rgba(255, 255, 255, 0.035)
+    );
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+
+/* ============================================================
+   INFORMAÇÕES
+   ============================================================ */
+
+#section-agenda .appointment-main {
+  display: grid;
+
+  grid-template-columns:
+    minmax(250px, 1.4fr)
+    minmax(170px, 0.8fr)
+    minmax(150px, 0.7fr);
+
+  align-items: center;
+
+  gap: 24px;
+
+  width: 100%;
+}
+
+
+/* Nome do aluno */
+
+#section-agenda .appointment-main strong {
+  display: block;
+
+  font-size: 16px;
+  font-weight: 800;
+
+  color: #fff;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* Data e horário */
+
+#section-agenda .appointment-main > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #ff6a00;
+}
+
+
+/* Ícone antes da data */
+
+#section-agenda .appointment-main > span::before {
+  content: "\f073";
+
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+
+/* Serviço */
+
+#section-agenda .appointment-main small {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+
+/* Observação */
+
+#section-agenda .appointment-main small + small {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+
+/* ============================================================
+   BOTÃO EXCLUIR
+   ============================================================ */
+
+#section-agenda .appointment-delete {
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.035);
+
+  color: rgba(255, 255, 255, 0.45);
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+#section-agenda .appointment-delete:hover {
+  background: rgba(220, 53, 69, 0.12);
+
+  border-color: rgba(220, 53, 69, 0.35);
+
+  color: #ff5c6c;
+
+  transform: scale(1.05);
+}
+
+
+/* ============================================================
+   ESTADO VAZIO
+   ============================================================ */
+
+#section-agenda .appointment-list .admin-empty-state {
+  padding: 50px 25px;
+
+  text-align: center;
+
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.015);
+}
+
+#section-agenda .appointment-list .admin-empty-state i {
+  font-size: 34px;
+  color: #ff6a00;
+  margin-bottom: 15px;
+}
+
+#section-agenda .appointment-list .admin-empty-state h3 {
+  margin: 0 0 8px;
+  color: #fff;
+}
+
+#section-agenda .appointment-list .admin-empty-state p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  #section-agenda .appointment-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+  }
+
+  #section-agenda .appointment-main strong {
+    grid-column: 1 / -1;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  #section-agenda .agenda-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #section-agenda .appointment-item {
+    align-items: flex-start;
+    padding: 18px;
+  }
+
+  #section-agenda .appointment-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+  }
+
+  #section-agenda .appointment-main strong {
+    white-space: normal;
+  }
+
+  #section-agenda .appointment-delete {
+    width: 38px;
+    height: 38px;
+  }
+
+}
