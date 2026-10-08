@@ -351,17 +351,33 @@ async function loadStudentAgenda(uid) {
 
     const data = snapshot.val();
 
-    const appointments =
-      Object.entries(data)
-        .map(([id, item]) => ({
-          id,
-          ...item
-        }))
-        .sort((a, b) =>
-          `${a.date} ${a.time}`.localeCompare(
-            `${b.date} ${b.time}`
-          )
+const now = new Date();
+
+const appointments =
+  Object.entries(data)
+    .map(([id, item]) => ({
+      id,
+      ...item
+    }))
+    .filter(item => {
+
+      if (!item.date || !item.time) {
+        return false;
+      }
+
+      const appointmentDate =
+        new Date(
+          `${item.date}T${item.time}:00`
         );
+
+      return appointmentDate >= now;
+
+    })
+    .sort((a, b) =>
+      `${a.date} ${a.time}`.localeCompare(
+        `${b.date} ${b.time}`
+      )
+    );
 
 
     renderStudentAgenda(
