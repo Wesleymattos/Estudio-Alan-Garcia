@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#090a0c"
+  >
+
+  <title>Área do Aluno | Studio Alan Garcia</title>
+
+  <meta
+    name="description"
+    content="Área exclusiva do aluno do Studio Alan Garcia."
+  >
+
+  <meta
+    name="robots"
+    content="noindex, nofollow"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="assets/logo-alan-garcia.png"
+  >
+
+  <!-- Font Awesome -->
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <!-- CSS do projeto -->
+
+ <link
+  rel="stylesheet"
+  href="css/aluno.css"
+>
+
+</head>
+
+
+<body>
+
+  <div class="student-page">
+
+
+    <!-- ==================================================
+         HEADER
+         ================================================== -->
+
+    <header class="student-header">
+
+      <div class="student-header-inner">
+
+
+        <div class="student-brand">
+
+          <a href="index.html">
+
+            <img
+              src="assets/logo-alan-garcia.png"
+              alt="Studio Alan Garcia"
+            >
+
+          </a>
+
+          <span class="student-area-label">
+            Área do aluno
+          </span>
+
+        </div>
+
+
+        <div class="student-user-area">
+
+          <span
+            id="studentHeaderName"
+            class="student-user-name"
+          >
+            Aluno
+          </span>
+
+
+          <button
+            id="studentLogoutBtn"
+            class="student-logout"
+            type="button"
+          >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Sair
+
+          </button>
+
+        </div>
+
+
+      </div>
+
+    </header>
+
+
+    <!-- ==================================================
+         CONTEÚDO
+         ================================================== -->
+
+    <main class="student-main">
+
+
+      <!-- BOAS-VINDAS -->
+
+      <section class="student-welcome">
+
+        <small>
+          Área exclusiva
+        </small>
+
+        <h1>
+          Olá, <span id="studentName">Aluno</span>!
+        </h1>
+
+        <p>
+          Acompanhe seus treinos, horários,
+          evolução e informações pessoais
+          em um só lugar.
+        </p>
+
+      </section>
+
+
+      <!-- =================================================
+           PRÓXIMO COMPROMISSO
+           ================================================= -->
+
+      <section
+        id="nextTrainingSection"
+        class="next-training"
+      >
+
+        <div class="next-training-label">
+
+          <i class="fa-solid fa-calendar-check"></i>
+
+          Próximo compromisso
+
+        </div>
+
+
+        <div class="next-training-content">
+
+
+          <div class="next-training-info">
+
+            <h2 id="nextTrainingTitle">
+              Nenhum treino agendado
+            </h2>
+
+            <p id="nextTrainingDescription">
+              Quando houver um horário agendado,
+              ele aparecerá aqui.
+            </p>
+
+          </div>
+
+
+          <div class="next-training-date">
+
+            <strong id="nextTrainingDate">
+              —
+            </strong>
+
+            <span id="nextTrainingTime">
+              —
+            </span>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           RESUMO
+           ================================================= -->
+
+      <section class="student-summary-grid">
+
+
+        <article class="student-summary-card">
+
+          <div class="student-summary-icon">
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+          </div>
+
+          <small>
+            Próximo treino
+          </small>
+
+          <strong id="summaryNextTraining">
+            —
+          </strong>
+
+        </article>
+
+
+        <article class="student-summary-card">
+
+          <div class="student-summary-icon">
+
+            <i class="fa-solid fa-dumbbell"></i>
+
+          </div>
+
+          <small>
+            Treinos
+          </small>
+
+          <strong id="summaryTrainingCount">
+            —
+          </strong>
+
+        </article>
+
+
+        <article class="student-summary-card">
+
+          <div class="student-summary-icon">
+
+            <i class="fa-solid fa-weight-scale"></i>
+
+          </div>
+
+          <small>
+            Peso atual
+          </small>
+
+          <strong id="summaryCurrentWeight">
+            —
+          </strong>
+
+        </article>
+
+
+        <article class="student-summary-card">
+
+          <div class="student-summary-icon">
+
+            <i class="fa-solid fa-bullseye"></i>
+
+          </div>
+
+          <small>
+            Objetivo
+          </small>
+
+          <strong id="summaryGoal">
+            —
+          </strong>
+
+        </article>
+
+
+      </section>
+
+
+      <!-- =================================================
+           MINHA ÁREA
+           ================================================= -->
+
+      <section class="student-section">
+
+
+        <div class="student-section-header">
+
+          <div>
+
+            <h2 class="student-section-title">
+              Minha área
+            </h2>
+
+            <p class="student-section-subtitle">
+              Acesse seus recursos e informações.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="student-modules">
+
+
+          <!-- TREINOS -->
+
+          <article
+            class="student-module"
+            id="moduleTraining"
+          >
+
+            <div class="student-module-icon">
+
+              <i class="fa-solid fa-dumbbell"></i>
+
+            </div>
+
+
+            <div class="student-module-content">
+
+              <h3>
+                Meus treinos
+              </h3>
+
+              <p>
+                Consulte sua ficha de treinamento
+                e seus exercícios.
+              </p>
+
+            </div>
+
+
+            <div class="student-module-arrow">
+
+              <i class="fa-solid fa-chevron-right"></i>
+
+            </div>
+
+          </article>
+
+
+          <!-- AGENDA -->
+
+          <article
+            class="student-module"
+            id="moduleAgenda"
+          >
+
+            <div class="student-module-icon">
+
+              <i class="fa-solid fa-calendar-days"></i>
+
+            </div>
+
+
+            <div class="student-module-content">
+
+              <h3>
+                Minha agenda
+              </h3>
+
+              <p>
+                Veja seus próximos horários
+                e compromissos.
+              </p>
+
+            </div>
+
+
+            <div class="student-module-arrow">
+
+              <i class="fa-solid fa-chevron-right"></i>
+
+            </div>
+
+          </article>
+
+
+          <!-- PROGRESSO -->
+
+          <article
+            class="student-module"
+            id="moduleProgress"
+          >
+
+            <div class="student-module-icon">
+
+              <i class="fa-solid fa-chart-line"></i>
+
+            </div>
+
+
+            <div class="student-module-content">
+
+              <h3>
+                Meu progresso
+              </h3>
+
+              <p>
+                Acompanhe sua evolução ao longo
+                do treinamento.
+              </p>
+
+            </div>
+
+
+            <div class="student-module-arrow">
+
+              <i class="fa-solid fa-chevron-right"></i>
+
+            </div>
+
+          </article>
+
+
+          <!-- DADOS -->
+
+          <article
+            class="student-module"
+            id="moduleData"
+          >
+
+            <div class="student-module-icon">
+
+              <i class="fa-solid fa-user"></i>
+
+            </div>
+
+
+            <div class="student-module-content">
+
+              <h3>
+                Meus dados
+              </h3>
+
+              <p>
+                Consulte suas informações
+                cadastrais.
+              </p>
+
+            </div>
+
+
+            <div class="student-module-arrow">
+
+              <i class="fa-solid fa-chevron-right"></i>
+
+            </div>
+
+          </article>
+
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           MINHA AGENDA
+           ================================================= -->
+
+      <section
+        class="student-section"
+        id="studentAgendaSection"
+      >
+
+
+        <div class="student-section-header">
+
+          <div>
+
+            <h2 class="student-section-title">
+              Minha agenda
+            </h2>
+
+            <p class="student-section-subtitle">
+              Seus próximos horários no Studio.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="student-agenda-card">
+
+          <div
+            id="studentAgendaList"
+            class="student-empty-state"
+          >
+
+            <i class="fa-regular fa-calendar"></i>
+
+            <p>
+              Carregando sua agenda...
+            </p>
+
+          </div>
+
+        </div>
+
+
+      </section>
+
+
+      <!-- =================================================
+           MEUS DADOS
+           ================================================= -->
+
+      <section
+        class="student-section"
+        id="studentDataSection"
+      >
+
+
+        <div class="student-section-header">
+
+          <div>
+
+            <h2 class="student-section-title">
+              Meus dados
+            </h2>
+
+            <p class="student-section-subtitle">
+              Informações cadastradas no Studio.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="student-data-grid">
+
+
+          <!-- DADOS PESSOAIS -->
+
+          <article class="student-data-card">
+
+            <h3>
+
+              <i class="fa-solid fa-user"></i>
+
+              Dados pessoais
+
+            </h3>
+
+
+            <div class="student-data-item">
+
+              <span>
+                Nome
+              </span>
+
+              <span id="dataStudentName">
+                —
+              </span>
+
+            </div>
+
+
+            <div class="student-data-item">
+
+              <span>
+                E-mail
+              </span>
+
+              <span id="dataStudentEmail">
+                —
+              </span>
+
+            </div>
+
+
+            <div class="student-data-item">
+
+              <span>
+                WhatsApp
+              </span>
+
+              <span id="dataStudentWhatsapp">
+                —
+              </span>
+
+            </div>
+
+
+            <div class="student-data-item">
+
+              <span>
+                Data de nascimento
+              </span>
+
+              <span id="dataStudentBirthDate">
+                —
+              </span>
+
+            </div>
+
+
+          </article>
+
+
+          <!-- OBJETIVO / EVOLUÇÃO -->
+
+          <article class="student-data-card">
+
+            <h3>
+
+              <i class="fa-solid fa-bullseye"></i>
+
+              Objetivo e evolução
+
+            </h3>
+
+
+            <div class="student-data-item">
+
+              <span>
+                Objetivo
+              </span>
+
+              <span id="dataStudentGoal">
+                —
+              </span>
+
+            </div>
+
+
+            <div class="student-data-item">
+
+              <span>
+                Peso inicial
+              </span>
+
+              <span id="dataStudentInitialWeight">
+                —
+              </span>
+
+            </div>
+
+
+            <div class="student-data-item">
+
+              <span>
+                Peso atual
+              </span>
+
+              <span id="dataStudentCurrentWeight">
+                —
+              </span>
+
+            </div>
+
+
+            <div class="student-data-item">
+
+              <span>
+                Status
+              </span>
+
+              <span id="dataStudentStatus">
+                —
+              </span>
+
+            </div>
+
+
+          </article>
+
+
+        </div>
+
+
+      </section>
+
+
+    </main>
+
+
+    <!-- ==================================================
+         FOOTER
+         ================================================== -->
+
+    <footer class="student-footer">
+
+      Studio Alan Garcia
+      —
+      Treinamento Físico Personalizado
+
+    </footer>
+
+
+  </div>
+
+
+  <!-- ==================================================
+       JAVASCRIPT
+       ================================================== -->
+
+  <script
+    type="module"
+    src="js/aluno.js"
+  ></script>
+
+</body>
+
+</html>
