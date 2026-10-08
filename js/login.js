@@ -65,10 +65,11 @@ async function handleAuthState(user) {
 
   try {
 
-    const userRef = firebaseFns.ref(
-      db,
-      `usuarios/${user.uid}`
-    );
+    const userRef =
+      firebaseFns.ref(
+        db,
+        `usuarios/${user.uid}`
+      );
 
     const snapshot =
       await firebaseFns.get(userRef);
@@ -83,43 +84,93 @@ async function handleAuthState(user) {
       await firebaseFns.signOut(auth);
 
       showLogin(
-        "Usuário sem cadastro administrativo."
+        "Usuário sem cadastro no sistema."
       );
 
       return;
     }
 
 
-    const userData = snapshot.val();
+    const userData =
+      snapshot.val();
 
 
-    if (
-      userData.ativo !== true ||
-      userData.tipo !== "admin"
-    ) {
+    // -----------------------------------------
+    // VERIFICA USUÁRIO ATIVO
+    // -----------------------------------------
+
+    if (userData.ativo !== true) {
 
       console.warn(
-        "Usuário sem permissão de administrador."
+        "Usuário inativo."
       );
 
       await firebaseFns.signOut(auth);
 
       showLogin(
-        "Este usuário não possui permissão de administrador."
+        "Este usuário está inativo."
       );
 
       return;
     }
 
 
-    updateAdminUser(
-      userData,
-      user
+    // -----------------------------------------
+    // ADMINISTRADOR
+    // -----------------------------------------
+
+    if (userData.tipo === "admin") {
+
+      updateAdminUser(
+        userData,
+        user
+      );
+
+      showAdmin();
+
+      return;
+    }
+
+
+    // -----------------------------------------
+    // ALUNO
+    // -----------------------------------------
+
+    if (userData.tipo === "aluno") {
+
+      console.log(
+        "Usuário identificado como aluno."
+      );
+
+      /*
+       * A área do aluno ainda será criada.
+       * Por enquanto, não liberamos o painel administrativo.
+       */
+
+      await firebaseFns.signOut(auth);
+
+      showLogin(
+        "Área do aluno ainda está em desenvolvimento."
+      );
+
+      return;
+    }
+
+
+    // -----------------------------------------
+    // OUTROS PERFIS
+    // -----------------------------------------
+
+    console.warn(
+      "Tipo de usuário não reconhecido:",
+      userData.tipo
     );
 
+    await firebaseFns.signOut(auth);
 
-    showAdmin();
-
+    showLogin(
+      "Este tipo de usuário não possui acesso."
+    );
 
   } catch (error) {
 
@@ -133,6 +184,7 @@ async function handleAuthState(user) {
     );
 
   }
+
 }
 
 
