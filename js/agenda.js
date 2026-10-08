@@ -68,11 +68,104 @@ async function getFirebase() {
 }
 
 
+
+
+async function loadStudentsForAgenda() {
+
+  const select = $("#clientId");
+
+  if (!select) return;
+
+  select.innerHTML = `
+    <option value="">
+      Carregando alunos...
+    </option>
+  `;
+
+  await getFirebase();
+
+  if (
+    !FIREBASE_ENABLED ||
+    !db ||
+    !firebaseFns ||
+    !auth?.currentUser
+  ) {
+    select.innerHTML = `
+      <option value="">
+        Firebase indisponível
+      </option>
+    `;
+    return;
+  }
+
+  try {
+
+    const studentsRef =
+      firebaseFns.ref(db, "alunos");
+
+    const snapshot =
+      await firebaseFns.get(studentsRef);
+
+    select.innerHTML = `
+      <option value="">
+        Selecione o aluno
+      </option>
+    `;
+
+    if (!snapshot.exists()) {
+      return;
+    }
+
+    const students = snapshot.val();
+
+    Object.entries(students)
+      .filter(([uid, student]) =>
+        student &&
+        student.status !== "inativo"
+      )
+      .sort(([, a], [, b]) =>
+        String(a.nomeCompleto || "")
+          .localeCompare(
+            String(b.nomeCompleto || ""),
+            "pt-BR"
+          )
+      )
+      .forEach(([uid, student]) => {
+
+        const option =
+          document.createElement("option");
+
+        option.value = uid;
+        option.textContent =
+          student.nomeCompleto || "Aluno sem nome";
+
+        select.appendChild(option);
+
+      });
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao carregar alunos para a agenda:",
+      error
+    );
+
+    select.innerHTML = `
+      <option value="">
+        Erro ao carregar alunos
+      </option>
+    `;
+
+  }
+}
+
 // ============================================================
 // CARREGAR AGENDA
 // ============================================================
 
 export async function loadAgenda() {
+
+  await loadStudentsForAgenda();
 
   await getFirebase();
 
