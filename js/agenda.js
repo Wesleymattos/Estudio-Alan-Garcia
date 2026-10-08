@@ -490,9 +490,8 @@ export async function handleAppointmentSubmit(event) {
 
   event.preventDefault();
 
-
-  const clientName =
-    $("#clientName")?.value.trim();
+  const clientId =
+    $("#clientId")?.value;
 
   const date =
     $("#appointmentDate")?.value;
@@ -507,12 +506,26 @@ export async function handleAppointmentSubmit(event) {
     $("#appointmentNotes")?.value.trim();
 
 
-  if (!clientName || !date || !time) {
+  if (!clientId || !date || !time) {
     return;
   }
 
 
+  const clientSelect =
+    $("#clientId");
+
+  const selectedOption =
+    clientSelect?.options[
+      clientSelect.selectedIndex
+    ];
+
+  const clientName =
+    selectedOption?.textContent.trim() || "";
+
+
   const appointment = {
+
+    clientId,
 
     clientName,
 
@@ -530,14 +543,11 @@ export async function handleAppointmentSubmit(event) {
   };
 
 
-  await addAppointment(
-    appointment
-  );
-
+  await addAppointment(appointment);
 
   event.target.reset();
-}
 
+}
 
 // ============================================================
 // LIMPAR AGENDA LOCAL
