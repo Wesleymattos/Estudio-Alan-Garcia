@@ -959,3 +959,90 @@ body {
   }
 
 }
+
+
+/* ============================================================
+   AGENDA DO ALUNO
+   ============================================================ */
+
+.student-agenda-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.student-agenda-item:last-child {
+  border-bottom: none;
+}
+
+.student-agenda-date {
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.student-agenda-date strong {
+  font-size: 15px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.student-agenda-date span {
+  font-size: 14px;
+  color: #ff6a00;
+  font-weight: 700;
+}
+
+.student-agenda-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.student-agenda-info strong {
+  font-size: 15px;
+  color: #fff;
+}
+
+.student-agenda-info span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+  .student-agenda-item {
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .student-agenda-date {
+    min-width: 115px;
+  }
+
+  .student-agenda-date strong {
+    font-size: 13px;
+  }
+
+  .student-agenda-date span {
+    font-size: 13px;
+  }
+
+  .student-agenda-info strong {
+    font-size: 14px;
+  }
+
+  .student-agenda-info span {
+    font-size: 12px;
+  }
+
+}
