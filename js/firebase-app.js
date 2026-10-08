@@ -50,32 +50,17 @@ export async function initFirebase() {
 
   db = firebaseDatabase.getDatabase(app);
 
-  firebaseFns = {
-    signInWithEmailAndPassword:
-      firebaseAuth.signInWithEmailAndPassword,
+ firebaseFns = {
+  signInWithEmailAndPassword: firebaseAuth.signInWithEmailAndPassword,
+  signOut: firebaseAuth.signOut,
+  onAuthStateChanged: firebaseAuth.onAuthStateChanged,
 
-    signOut:
-      firebaseAuth.signOut,
-
-    onAuthStateChanged:
-      firebaseAuth.onAuthStateChanged,
-
-    ref:
-      firebaseDatabase.ref,
-
-    get:
-      firebaseDatabase.get,
-
-    set:
-      firebaseDatabase.set,
-
-    push:
-      firebaseDatabase.push,
-
-    remove:
-      firebaseDatabase.remove
-  };
-
+  ref: firebaseDatabase.ref,
+  get: firebaseDatabase.get,
+  set: firebaseDatabase.set,
+  push: firebaseDatabase.push,
+  remove: firebaseDatabase.remove
+};
   return {
     app,
     auth,

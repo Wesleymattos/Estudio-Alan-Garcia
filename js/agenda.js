@@ -261,6 +261,10 @@ export async function addAppointment(appointment) {
 
     try {
 
+      // --------------------------------------------------------
+      // SALVA NA AGENDA PRINCIPAL
+      // --------------------------------------------------------
+
       const agendaRef =
         firebaseFns.ref(
           db,
@@ -280,6 +284,31 @@ export async function addAppointment(appointment) {
       appointment.id =
         newRef.key;
 
+
+      // --------------------------------------------------------
+      // SALVA NA AGENDA DO ALUNO
+      // --------------------------------------------------------
+
+      if (appointment.clientId) {
+
+        const studentAgendaRef =
+          firebaseFns.ref(
+            db,
+            `agendaAluno/${appointment.clientId}/${newRef.key}`
+          );
+
+        await firebaseFns.set(
+          studentAgendaRef,
+          appointment
+        );
+
+      }
+
+
+      // --------------------------------------------------------
+      // ATUALIZA A AGENDA ADMINISTRATIVA
+      // --------------------------------------------------------
+
       appointments.push(
         appointment
       );
@@ -294,7 +323,9 @@ export async function addAppointment(appointment) {
         "Erro ao salvar agendamento:",
         error
       );
+
     }
+
   }
 
 
@@ -315,7 +346,9 @@ export async function addAppointment(appointment) {
   );
 
   renderAppointments();
+
 }
+
 
 
 // ============================================================

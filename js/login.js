@@ -55,15 +55,21 @@ const firebaseStatus = $("#firebaseStatus");
 
 async function handleAuthState(user) {
 
+  // ----------------------------------------------------------
+  // NÃO ESTÁ LOGADO
+  // ----------------------------------------------------------
+
   if (!user) {
-
     showLogin();
-
     return;
   }
 
 
   try {
+
+    // --------------------------------------------------------
+    // BUSCAR USUÁRIO DO SISTEMA
+    // --------------------------------------------------------
 
     const userRef =
       firebaseFns.ref(
@@ -95,9 +101,9 @@ async function handleAuthState(user) {
       snapshot.val();
 
 
-    // -----------------------------------------
-    // VERIFICA USUÁRIO ATIVO
-    // -----------------------------------------
+    // --------------------------------------------------------
+    // VERIFICAR SE ESTÁ ATIVO
+    // --------------------------------------------------------
 
     if (userData.ativo !== true) {
 
@@ -115,9 +121,9 @@ async function handleAuthState(user) {
     }
 
 
-    // -----------------------------------------
+    // --------------------------------------------------------
     // ADMINISTRADOR
-    // -----------------------------------------
+    // --------------------------------------------------------
 
     if (userData.tipo === "admin") {
 
@@ -132,9 +138,9 @@ async function handleAuthState(user) {
     }
 
 
-    // -----------------------------------------
+    // --------------------------------------------------------
     // ALUNO
-    // -----------------------------------------
+    // --------------------------------------------------------
 
     if (userData.tipo === "aluno") {
 
@@ -142,24 +148,16 @@ async function handleAuthState(user) {
         "Usuário identificado como aluno."
       );
 
-      /*
-       * A área do aluno ainda será criada.
-       * Por enquanto, não liberamos o painel administrativo.
-       */
-
-      await firebaseFns.signOut(auth);
-
-      showLogin(
-        "Área do aluno ainda está em desenvolvimento."
-      );
+      window.location.href =
+        "aluno.html";
 
       return;
     }
 
 
-    // -----------------------------------------
-    // OUTROS PERFIS
-    // -----------------------------------------
+    // --------------------------------------------------------
+    // TIPO NÃO RECONHECIDO
+    // --------------------------------------------------------
 
     console.warn(
       "Tipo de usuário não reconhecido:",
@@ -171,6 +169,7 @@ async function handleAuthState(user) {
     showLogin(
       "Este tipo de usuário não possui acesso."
     );
+
 
   } catch (error) {
 
@@ -186,7 +185,6 @@ async function handleAuthState(user) {
   }
 
 }
-
 
 // ============================================================
 // MOSTRAR LOGIN
