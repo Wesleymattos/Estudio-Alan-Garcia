@@ -4986,3 +4986,210 @@ footer a:hover {
   }
 
 }
+
+
+/* ========================================
+   CALENDÁRIO — STUDIO ALAN GARCIA
+======================================== */
+
+#section-calendario .calendar-card {
+  background: #17191e;
+  border: 1px solid #30343c;
+  border-radius: 16px;
+  padding: 24px;
+  overflow: hidden;
+}
+
+#studioCalendar {
+  color: #f5f5f5;
+  font-family: inherit;
+  --fc-border-color: #343943;
+  --fc-page-bg-color: #17191e;
+  --fc-neutral-bg-color: #20232a;
+  --fc-list-event-hover-bg-color: #292d35;
+  --fc-today-bg-color: rgba(255, 122, 24, 0.09);
+  --fc-now-indicator-color: #ff7a18;
+}
+
+/* Cabeçalho e título */
+
+#studioCalendar .fc-toolbar {
+  gap: 14px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+#studioCalendar .fc-toolbar-title {
+  color: #ffffff;
+  font-size: clamp(18px, 2vw, 27px);
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+#studioCalendar .fc-col-header-cell {
+  background: #22252c;
+  padding: 12px 4px;
+}
+
+#studioCalendar .fc-col-header-cell-cushion {
+  color: #f5f5f5;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: capitalize;
+}
+
+/* Botões */
+
+#studioCalendar .fc-button {
+  background: #292e37;
+  border: 1px solid #3b424d;
+  color: #ffffff;
+  box-shadow: none;
+  text-transform: capitalize;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+#studioCalendar .fc-button:hover {
+  background: #383e49;
+  border-color: #ff7a18;
+}
+
+#studioCalendar .fc-button-primary:not(:disabled).fc-button-active,
+#studioCalendar .fc-button-primary:not(:disabled):active {
+  background: #ff7a18;
+  border-color: #ff7a18;
+  color: #17191e;
+}
+
+#studioCalendar .fc-button:focus {
+  box-shadow: 0 0 0 2px rgba(255, 122, 24, 0.25);
+}
+
+/* Grade e horários */
+
+#studioCalendar .fc-timegrid-slot {
+  height: 42px;
+}
+
+#studioCalendar .fc-timegrid-slot-label,
+#studioCalendar .fc-timegrid-axis-cushion {
+  color: #b8bec8;
+  font-size: 12px;
+}
+
+#studioCalendar .fc-timegrid-slot-minor {
+  border-top-style: dashed;
+  border-top-color: #292d35;
+}
+
+#studioCalendar .fc-scrollgrid,
+#studioCalendar .fc-scrollgrid td,
+#studioCalendar .fc-scrollgrid th {
+  border-color: #343943;
+}
+
+/* Compromissos */
+
+#studioCalendar .fc-event {
+  background: #292e37;
+  border: 1px solid #ff7a18;
+  border-left: 4px solid #ff7a18;
+  border-radius: 6px;
+  color: #ffffff;
+  padding: 3px 5px;
+  cursor: grab;
+  font-size: 12px;
+}
+
+#studioCalendar .fc-event:hover {
+  background: #383e49;
+  border-color: #ff9a4d;
+}
+
+#studioCalendar .fc-event-title,
+#studioCalendar .fc-event-time {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+#studioCalendar .fc-event-main {
+  overflow: hidden;
+}
+
+/* Indicador do dia atual */
+
+#studioCalendar .fc-day-today {
+  background: rgba(255, 122, 24, 0.06) !important;
+}
+
+/* Resumo acima do calendário */
+
+#section-calendario .calendar-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+#section-calendario .calendar-summary > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid #343943;
+  border-radius: 10px;
+  background: #20232a;
+  color: #e7e9ed;
+  font-size: 13px;
+}
+
+#section-calendario .calendar-summary i {
+  color: #ff7a18;
+}
+
+/* Celular */
+
+@media (max-width: 768px) {
+  #section-calendario .calendar-card {
+    padding: 10px;
+  }
+
+  #studioCalendar .fc-toolbar {
+    justify-content: center;
+  }
+
+  #studioCalendar .fc-toolbar-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  #studioCalendar .fc-timegrid-slot {
+    height: 36px;
+  }
+
+  #studioCalendar .fc-event {
+    font-size: 10px;
+    padding: 2px;
+  }
+}
+
+
+#studioCalendar .fc-timegrid-event {
+  min-width: 0;
+}
+
+#studioCalendar .fc-timegrid-event .fc-event-main {
+  min-width: 0;
+  overflow: hidden;
+  padding: 3px 4px;
+}
+
+#studioCalendar .fc-timegrid-event-harness {
+  min-width: 0;
+}
+
+#studioCalendar .fc-timegrid-event .fc-event-main-frame {
+  min-width: 0;
+  overflow: hidden;
+}
+
