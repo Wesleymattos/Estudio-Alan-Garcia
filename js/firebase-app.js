@@ -55,11 +55,14 @@ export async function initFirebase() {
   signOut: firebaseAuth.signOut,
   onAuthStateChanged: firebaseAuth.onAuthStateChanged,
 
-  ref: firebaseDatabase.ref,
-  get: firebaseDatabase.get,
-  set: firebaseDatabase.set,
-  push: firebaseDatabase.push,
-  remove: firebaseDatabase.remove
+
+ref: firebaseDatabase.ref,
+get: firebaseDatabase.get,
+set: firebaseDatabase.set,
+push: firebaseDatabase.push,
+remove: firebaseDatabase.remove,
+update: firebaseDatabase.update
+
 };
   return {
     app,

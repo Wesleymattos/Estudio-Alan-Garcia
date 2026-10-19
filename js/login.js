@@ -19,6 +19,10 @@ import {
 } from "./agenda.js";
 
 
+import { initStudioCalendar } from "./calendario.js";
+
+
+
 // ============================================================
 // VARIÁVEIS
 // ============================================================
@@ -464,11 +468,15 @@ function showSection(sectionName) {
   closeMobileMenu();
 
 
-  if (sectionName === "agenda") {
+  
+if (sectionName === "agenda") {
+  loadAgenda();
+}
 
-    loadAgenda();
+if (sectionName === "calendario") {
+  initStudioCalendar();
+}
 
-  }
 
 
   if (sectionName === "dashboard") {
