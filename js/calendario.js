@@ -52,15 +52,15 @@ slotLabelFormat: {
       editable: true,
         selectable: true,
 
-        dateClick: async (info) => {
-  const end = new Date(info.date);
-  end.setHours(end.getHours() + 1);
+        
+      dateClick: async (info) => {
+        await showSlotModal(info.date);
+      },
 
-  await createCalendarEvent({
-    start: info.date,
-    end
-  });
-},
+      eventClick: async (info) => {
+        await showSlotModal(info.event.start);
+      },
+
         selectMirror: true,
         selectOverlap: true,
         eventOverlap: true,
@@ -114,10 +114,7 @@ slotLabelFormat: {
           event.preventDefault();
           event.stopPropagation();
 
-          createCalendarEvent({
-            start: info.event.start,
-            end: info.event.end
-          });
+          showSlotModal(info.event.start);
         });
 
         wrapper.append(title, addButton);
@@ -495,6 +492,222 @@ function countStudentsInSlot(date, excludeId = null) {
 function hasAvailableSlot(date, excludeId = null) {
   return countStudentsInSlot(date, excludeId) < 5;
 }
+
+
+async function showSlotModal(date) {
+  const slotDate = formatLocalDate(date);
+  const slotHour = date.getHours();
+
+  const getSlotEvents = () =>
+    calendar.getEvents().filter((event) => {
+      return (
+        event.start &&
+        formatLocalDate(event.start) === slotDate &&
+        event.start.getHours() === slotHour
+      );
+    });
+
+  const overlay = document.createElement("div");
+
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(0,0,0,.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      width:100%;
+      max-width:520px;
+      max-height:85vh;
+      overflow:auto;
+      background:#18191e;
+      color:#fff;
+      border:1px solid #ff7a18;
+      border-radius:16px;
+      padding:24px;
+      box-sizing:border-box;
+    ">
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+      ">
+        <div>
+          <p style="color:#ff7a18;margin:0 0 6px">
+            GERENCIAR HORÁRIO
+          </p>
+          <h2 style="margin:0" id="slotModalTitle"></h2>
+          <p id="slotModalCount" style="color:#bbb"></p>
+        </div>
+        <button id="closeSlotModal" type="button"
+          aria-label="Fechar"
+          style="font-size:24px;background:none;border:0;color:white;cursor:pointer">
+          &times;
+        </button>
+      </div>
+
+      <div id="slotStudentList"></div>
+
+      <button id="addSlotStudent" type="button" style="
+        width:100%;
+        margin-top:18px;
+        padding:13px;
+        background:#ff7a18;
+        color:#17191e;
+        border:0;
+        border-radius:9px;
+        font-weight:bold;
+        cursor:pointer;
+      ">+ Adicionar aluno</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const closeModal = () => overlay.remove();
+
+  overlay.querySelector("#closeSlotModal")
+    .addEventListener("click", closeModal);
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) closeModal();
+  });
+
+  overlay.querySelector("#slotModalTitle").textContent =
+    `${String(slotHour).padStart(2, "0")}:00 — ${slotDate}`;
+
+  const renderStudents = () => {
+    const events = getSlotEvents();
+    const list = overlay.querySelector("#slotStudentList");
+
+    overlay.querySelector("#slotModalCount").textContent =
+      `${events.length} de 5 vagas ocupadas`;
+
+    list.replaceChildren();
+
+    if (events.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "Nenhum aluno neste horário.";
+      empty.style.color = "#bbb";
+      list.appendChild(empty);
+    }
+
+    events.forEach((event) => {
+      const row = document.createElement("div");
+
+      row.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        padding:13px;
+        margin-top:10px;
+        background:#252830;
+        border:1px solid #383c45;
+        border-radius:10px;
+      `;
+
+      const details = document.createElement("div");
+      details.style.cssText = "min-width:0;overflow-wrap:anywhere";
+
+      const name = document.createElement("strong");
+      name.textContent = event.title;
+
+      const time = document.createElement("p");
+      time.textContent =
+        event.start.toTimeString().slice(0, 5) +
+        (event.extendedProps.service
+          ? ` · ${event.extendedProps.service}`
+          : "");
+
+      time.style.cssText =
+        "margin:5px 0 0;color:#bbb;font-size:12px";
+
+      details.append(name, time);
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.textContent = "Remover";
+
+      removeButton.style.cssText = `
+        flex-shrink:0;
+        padding:8px 10px;
+        color:white;
+        background:#a52a2a;
+        border:0;
+        border-radius:7px;
+        cursor:pointer;
+      `;
+
+      removeButton.addEventListener("click", async () => {
+        if (!confirm(`Remover o agendamento de ${event.title}?`)) {
+          return;
+        }
+
+        const { db, firebaseFns: fns } = firebase;
+        const clientId = event.extendedProps.clientId;
+
+        if (!clientId) {
+          alert("Não foi possível identificar o aluno deste agendamento.");
+          return;
+        }
+
+        removeButton.disabled = true;
+
+        try {
+          const updates = {};
+          updates[`agenda/${event.id}`] = null;
+          updates[`agendaAluno/${clientId}/${event.id}`] = null;
+
+          await fns.update(fns.ref(db), updates);
+
+          calendar.getEventById(event.id)?.remove();
+          renderStudents();
+        } catch (error) {
+          console.error("Erro ao remover agendamento:", error);
+          alert("Não foi possível remover o agendamento.");
+          removeButton.disabled = false;
+        }
+      });
+
+      row.append(details, removeButton);
+      list.appendChild(row);
+    });
+
+    const addButton = overlay.querySelector("#addSlotStudent");
+    addButton.disabled = events.length >= 5;
+    addButton.textContent = events.length >= 5
+      ? "Horário lotado (5/5)"
+      : "+ Adicionar aluno";
+
+    addButton.style.opacity = addButton.disabled ? "0.5" : "1";
+  };
+
+  overlay.querySelector("#addSlotStudent")
+    .addEventListener("click", async () => {
+      if (getSlotEvents().length >= 5) {
+        alert("Este horário já possui 5 alunos.");
+        return;
+      }
+
+      closeModal();
+
+      const start = new Date(date);
+      start.setMinutes(0, 0, 0);
+
+      await createCalendarEvent({ start });
+    });
+
+  renderStudents();
+}
+
 
 
 
