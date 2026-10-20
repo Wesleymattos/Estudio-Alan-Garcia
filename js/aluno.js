@@ -307,89 +307,150 @@ function renderStudent(studentData) {
 // CARREGAR AGENDA DO ALUNO
 // ============================================================
 
+
+
 async function loadStudentAgenda(uid) {
-
   const list = $("#studentAgendaList");
-
   if (!list) return;
 
   try {
+    const now = new Date();
 
-    const agendaRef =
-      firebaseFns.ref(
-        db,
-        `agendaAluno/${uid}`
+    const [agendaSnapshot, fixedSnapshot] =
+      await Promise.all([
+        firebaseFns.get(
+          firebaseFns.ref(db, `agendaAluno/${uid}`)
+        ),
+        firebaseFns.get(
+          firebaseFns.ref(db, "agendaFixa")
+        )
+      ]);
+
+    const appointments = [];
+
+    // Compromissos avulsos
+    if (agendaSnapshot.exists()) {
+      Object.entries(agendaSnapshot.val()).forEach(
+        ([id, item]) => {
+          if (!item.date || !item.time) return;
+
+          const dateTime = new Date(
+            `${item.date}T${item.time}:00`
+          );
+
+          if (dateTime < now) return;
+
+          appointments.push({
+            id,
+            ...item,
+            tipo: "avulso"
+          });
+        }
       );
-
-    const snapshot =
-      await firebaseFns.get(
-        agendaRef
-      );
-
-    if (!snapshot.exists()) {
-
-      list.innerHTML = `
-        <div class="student-empty-state">
-
-          <i class="fa-solid fa-calendar-xmark"></i>
-
-          <h3>
-            Nenhum treino agendado
-          </h3>
-
-          <p>
-            Seus próximos horários aparecerão aqui.
-          </p>
-
-        </div>
-      `;
-
-      updateAgendaSummary([]);
-
-      return;
     }
 
-    const data = snapshot.val();
+    // Treinos fixos
+    if (fixedSnapshot.exists()) {
+      const schedules = fixedSnapshot.val();
 
-const now = new Date();
+      const dayNames = [
+        "domingo",
+        "segunda",
+        "terca",
+        "quarta",
+        "quinta",
+        "sexta",
+        "sabado"
+      ];
 
-const appointments =
-  Object.entries(data)
-    .map(([id, item]) => ({
-      id,
-      ...item
-    }))
-    .filter(item => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-      if (!item.date || !item.time) {
-        return false;
-      }
+      const horizon = new Date(today);
+      horizon.setDate(horizon.getDate() + 56);
 
-      const appointmentDate =
-        new Date(
-          `${item.date}T${item.time}:00`
+      for (const [scheduleId, schedule] of Object.entries(schedules)) {
+        if (
+          schedule.ativo !== true ||
+          schedule.clientId !== uid ||
+          !schedule.dataInicio
+        ) {
+          continue;
+        }
+
+        const startDate = new Date(
+          `${schedule.dataInicio}T00:00:00`
         );
 
-      return appointmentDate >= now;
+        const endDate = schedule.dataFim
+          ? new Date(`${schedule.dataFim}T23:59:59`)
+          : null;
 
-    })
-    .sort((a, b) =>
+        for (
+          let date = new Date(today);
+          date <= horizon;
+          date.setDate(date.getDate() + 1)
+        ) {
+          if (date < startDate) continue;
+          if (endDate && date > endDate) continue;
+
+          const dayName = dayNames[date.getDay()];
+
+          // Aceita os dois formatos de dias:
+          // ["segunda", "quinta"] com time separado
+          // {"segunda":"16:00", "quinta":"16:00"}
+          const days = schedule.dias || {};
+
+          const time = Array.isArray(days)
+            ? (days.includes(dayName) ? schedule.time : null)
+            : days[dayName];
+
+          if (!time) continue;
+
+          const dateString = [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, "0"),
+            String(date.getDate()).padStart(2, "0")
+          ].join("-");
+
+          const dateTime = new Date(
+            `${dateString}T${time}:00`
+          );
+
+          if (dateTime < now) continue;
+
+          appointments.push({
+            id: `fixo_${scheduleId}_${dateString}`,
+            date: dateString,
+            time,
+            service: schedule.service || "Treino fixo",
+            notes: "Treino recorrente",
+            tipo: "fixo"
+          });
+        }
+      }
+    }
+
+    appointments.sort((a, b) =>
       `${a.date} ${a.time}`.localeCompare(
         `${b.date} ${b.time}`
       )
     );
 
+    renderStudentAgenda(appointments);
+    updateAgendaSummary(appointments);
 
-    renderStudentAgenda(
-      appointments
-    );
-
-    updateAgendaSummary(
-      appointments
-    );
+    if (appointments.length === 0) {
+      list.innerHTML = `
+        <div class="student-empty-state">
+          <i class="fa-solid fa-calendar-xmark"></i>
+          <h3>Nenhum treino agendado</h3>
+          <p>Seus próximos horários aparecerão aqui.</p>
+        </div>
+      `;
+    }
 
   } catch (error) {
-
     console.error(
       "Erro ao carregar agenda do aluno:",
       error
@@ -397,23 +458,14 @@ const appointments =
 
     list.innerHTML = `
       <div class="student-empty-state">
-
         <i class="fa-solid fa-triangle-exclamation"></i>
-
-        <h3>
-          Não foi possível carregar a agenda
-        </h3>
-
-        <p>
-          Tente atualizar a página.
-        </p>
-
+        <h3>Não foi possível carregar a agenda</h3>
+        <p>Tente atualizar a página.</p>
       </div>
     `;
-
   }
-
 }
+
 
 // ============================================================
 // RENDERIZAR AGENDA DO ALUNO
