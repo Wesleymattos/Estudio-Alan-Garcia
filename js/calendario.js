@@ -139,6 +139,9 @@ slotLabelFormat: {
       
 eventContent: (info) => {
   const wrapper = document.createElement("div");
+
+  const isFixed = info.event.extendedProps.tipo === "fixo";
+
   wrapper.style.cssText = `
     display: flex;
     align-items: center;
@@ -146,6 +149,8 @@ eventContent: (info) => {
     width: 100%;
     min-width: 0;
     overflow: hidden;
+    background: ${isFixed ? "#dc2626" : "#ff7a18"};
+    border-radius: 5px;
   `;
 
   const title = document.createElement("span");
