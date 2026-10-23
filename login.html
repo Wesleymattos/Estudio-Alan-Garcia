@@ -1046,52 +1046,127 @@
            FINANCEIRO
       ================================================== -->
 
-      <section
-        id="section-financeiro"
-        class="admin-section"
-        hidden
+      <section id="section-financeiro" class="admin-section" hidden>
+  <div class="admin-page-header">
+    <div>
+      <p class="eyebrow">CONTROLE</p>
+      <h2>Financeiro</h2>
+      <p>Controle receitas, despesas e mensalidades.</p>
+    </div>
+
+    <div>
+      <label for="financeiroMes">Mês de referência</label>
+      <input type="month" id="financeiroMes">
+    </div>
+
+    <button id="financeiroAtualizar" type="button">
+      <i class="fa-solid fa-rotate"></i> Atualizar
+    </button>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="admin-card">
+      <p>Total de receitas</p>
+      <h3 id="totalReceitas">R$ 0,00</h3>
+    </div>
+
+    <div class="admin-card">
+      <p>Total de despesas</p>
+      <h3 id="totalDespesas">R$ 0,00</h3>
+    </div>
+
+    <div class="admin-card">
+      <p>Saldo do período</p>
+      <h3 id="saldoFinanceiro">R$ 0,00</h3>
+    </div>
+
+    <div class="admin-card">
+      <p>Receitas pendentes</p>
+      <h3 id="totalPendentes">R$ 0,00</h3>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h3>Novo lançamento</h3>
+
+    <form id="formLancamento">
+      <div class="form-group">
+        <label for="lancamentoTipo">Tipo</label>
+        <select id="lancamentoTipo" required>
+          <option value="receita">Receita</option>
+          <option value="despesa">Despesa</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="lancamentoDescricao">Descrição</label>
+        <input
+          type="text"
+          id="lancamentoDescricao"
+          placeholder="Ex.: Mensalidade de aluno"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="lancamentoValor">Valor (R$)</label>
+        <input
+          type="number"
+          id="lancamentoValor"
+          min="0.01"
+          step="0.01"
+          placeholder="0,00"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="lancamentoData">Data</label>
+        <input type="date" id="lancamentoData" required>
+      </div>
+
+      <div class="form-group">
+        <label for="lancamentoCategoria">Categoria</label>
+        <input
+          type="text"
+          id="lancamentoCategoria"
+          placeholder="Ex.: Mensalidade, aluguel"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="lancamentoStatus">Situação</label>
+        <select id="lancamentoStatus" required>
+          <option value="pago">Pago</option>
+          <option value="pendente">Pendente</option>
+        </select>
+      </div>
+
+      <p id="financeiroMensagem" role="status"></p>
+
+      <button type="submit">
+        <i class="fa-solid fa-plus"></i> Salvar lançamento
+      </button>
+    </form>
+  </div>
+
+  <div class="admin-card">
+    <h3>Histórico financeiro</h3>
+
+    <div class="form-group">
+      <label for="financeiroBusca">Buscar lançamento</label>
+      <input
+        type="search"
+        id="financeiroBusca"
+        placeholder="Pesquisar por descrição ou categoria"
       >
+    </div>
 
-        <div class="admin-page-header">
-
-          <div>
-
-            <p class="eyebrow">
-              CONTROLE
-            </p>
-
-            <h2>
-              Financeiro
-            </h2>
-
-            <p>
-              Controle pagamentos e mensalidades.
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <div class="admin-card">
-
-          <div class="admin-empty-state">
-
-            <i class="fa-solid fa-wallet"></i>
-
-            <h3>
-              Controle financeiro
-            </h3>
-
-            <p>
-              Vamos construir esta área posteriormente.
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
+    <div id="listaLancamentos">
+      <p>Carregando lançamentos...</p>
+    </div>
+  </div>
+</section>
 
 
 
@@ -1599,6 +1674,9 @@
   type="module"
   src="js/alunos-lista.js"
 ></script>
+
+
+<script type="module" src="js/financeiro.js"></script>
 
 
 </body>
