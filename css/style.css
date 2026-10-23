@@ -5193,3 +5193,236 @@ footer a:hover {
   overflow: hidden;
 }
 
+
+
+/* ==========================================
+   FINANCEIRO — STUDIO ALAN GARCIA
+   ========================================== */
+
+.financeiro-body {
+  min-height: 100vh;
+  background: var(--background, #111);
+  color: var(--text-color, #f5f5f5);
+}
+
+.financeiro-container {
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.financeiro-header,
+.financeiro-secao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.financeiro-header {
+  margin-bottom: 28px;
+}
+
+.financeiro-header h1 {
+  margin: 8px 0;
+}
+
+.financeiro-filtros {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.financeiro-filtros label,
+.financeiro-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.financeiro-filtros input,
+.financeiro-form input,
+.financeiro-form select,
+.financeiro-secao-header input {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #454545;
+  border-radius: 8px;
+  background: #1b1b1b;
+  color: #fff;
+  font: inherit;
+}
+
+.financeiro-resumo {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.financeiro-card,
+.financeiro-painel {
+  border: 1px solid #303030;
+  border-radius: 14px;
+  background: #191919;
+}
+
+.financeiro-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+}
+
+.financeiro-card span {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+}
+
+.financeiro-card strong {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  overflow-wrap: anywhere;
+}
+
+.financeiro-card > i {
+  color: #f39a35;
+  font-size: 1.2rem;
+}
+
+.financeiro-painel {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.financeiro-secao-header {
+  margin-bottom: 22px;
+}
+
+.financeiro-secao-header h2 {
+  margin: 0 0 8px;
+}
+
+.financeiro-secao-header p {
+  margin: 0;
+  color: #bdbdbd;
+}
+
+.financeiro-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.financeiro-form-acoes {
+  display: flex;
+  align-items: end;
+}
+
+.financeiro-mensagem {
+  grid-column: 1 / -1;
+  min-height: 1.2em;
+  margin: 0;
+}
+
+.financeiro-tabela-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.financeiro-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.financeiro-tabela th,
+.financeiro-tabela td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #333;
+  white-space: nowrap;
+}
+
+.financeiro-tabela th {
+  color: #c8c8c8;
+  font-size: 0.85rem;
+}
+
+.financeiro-tabela td {
+  font-size: 0.9rem;
+}
+
+.financeiro-tabela .financeiro-vazio {
+  padding: 28px;
+  color: #aaa;
+  text-align: center;
+}
+
+.financeiro-status {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.financeiro-status-pago {
+  background: #173b2b;
+  color: #9be3b7;
+}
+
+.financeiro-status-pendente {
+  background: #493719;
+  color: #ffd28a;
+}
+
+.financeiro-valor-receita {
+  color: #9be3b7;
+}
+
+.financeiro-valor-despesa {
+  color: #ff9b9b;
+}
+
+.financeiro-rodape {
+  color: #aaa;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.financeiro-acao {
+  border: 0;
+  padding: 7px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .financeiro-resumo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .financeiro-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .financeiro-container {
+    padding: 22px 14px;
+  }
+
+  .financeiro-resumo,
+  .financeiro-form {
+    grid-template-columns: 1fr;
+  }
+
+  .financeiro-painel {
+    padding: 16px;
+  }
+}
+
+

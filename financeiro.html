@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Financeiro | Studio Alan Garcia</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <link rel="icon" type="image/png" href="assets/logo-alan-garcia.png">
+</head>
+
+<body class="financeiro-body">
+
+  <main class="financeiro-container">
+
+    <header class="financeiro-header">
+      <div>
+        <p class="eyebrow">STUDIO ALAN GARCIA</p>
+        <h1>Financeiro</h1>
+        <p>Controle de receitas, despesas e mensalidades.</p>
+      </div>
+
+      <a href="login.html" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar ao painel
+      </a>
+    </header>
+
+    <section class="financeiro-filtros">
+      <label for="financeiroMes">
+        Mês de referência
+        <input type="month" id="financeiroMes">
+      </label>
+
+      <button id="financeiroAtualizar" class="btn btn-primary"
+              type="button">
+        <i class="fa-solid fa-rotate"></i>
+        Atualizar
+      </button>
+    </section>
+
+    <section class="financeiro-resumo">
+
+      <article class="financeiro-card">
+        <span>Receitas recebidas</span>
+        <strong id="totalReceitas">R$ 0,00</strong>
+        <i class="fa-solid fa-arrow-trend-up"></i>
+      </article>
+
+      <article class="financeiro-card">
+        <span>Despesas pagas</span>
+        <strong id="totalDespesas">R$ 0,00</strong>
+        <i class="fa-solid fa-arrow-trend-down"></i>
+      </article>
+
+      <article class="financeiro-card">
+        <span>Saldo realizado</span>
+        <strong id="saldoFinanceiro">R$ 0,00</strong>
+        <i class="fa-solid fa-wallet"></i>
+      </article>
+
+      <article class="financeiro-card">
+        <span>Valores pendentes</span>
+        <strong id="totalPendentes">R$ 0,00</strong>
+        <i class="fa-solid fa-clock"></i>
+      </article>
+
+    </section>
+
+    <section class="financeiro-painel">
+
+      <div class="financeiro-secao-header">
+        <div>
+          <h2>Novo lançamento</h2>
+          <p>Registre uma receita ou despesa.</p>
+        </div>
+      </div>
+
+      <form id="formLancamento" class="financeiro-form">
+
+        <label>
+          Tipo
+          <select id="lancamentoTipo" required>
+            <option value="receita">Receita</option>
+            <option value="despesa">Despesa</option>
+          </select>
+        </label>
+
+        <label>
+          Descrição
+          <input id="lancamentoDescricao"
+                 type="text" maxlength="120"
+                 placeholder="Ex.: Mensalidade ou aluguel"
+                 required>
+        </label>
+
+        <label>
+          Valor (R$)
+          <input id="lancamentoValor"
+                 type="number" min="0.01"
+                 step="0.01" placeholder="0,00"
+                 required>
+        </label>
+
+        <label>
+          Data
+          <input id="lancamentoData" type="date" required>
+        </label>
+
+        <label>
+          Situação
+          <select id="lancamentoStatus" required>
+            <option value="pago">Pago / recebido</option>
+            <option value="pendente">Pendente</option>
+          </select>
+        </label>
+
+        <label>
+          Categoria
+          <select id="lancamentoCategoria" required>
+            <option value="mensalidade">Mensalidade</option>
+            <option value="servicos">Serviços</option>
+            <option value="aluguel">Aluguel</option>
+            <option value="equipamentos">Equipamentos</option>
+            <option value="contas">Contas e despesas fixas</option>
+            <option value="outros">Outros</option>
+          </select>
+        </label>
+
+        <div class="financeiro-form-acoes">
+          <button class="btn btn-primary" type="submit">
+            <i class="fa-solid fa-plus"></i>
+            Salvar lançamento
+          </button>
+        </div>
+
+        <p id="financeiroMensagem"
+           class="financeiro-mensagem"
+           role="status" aria-live="polite"></p>
+
+      </form>
+    </section>
+
+    <section class="financeiro-painel">
+
+      <div class="financeiro-secao-header">
+        <div>
+          <h2>Movimentações</h2>
+          <p>Receitas e despesas do mês selecionado.</p>
+        </div>
+
+        <input id="financeiroBusca"
+               type="search"
+               placeholder="Buscar lançamento..."
+               aria-label="Buscar lançamento">
+      </div>
+
+      <div class="financeiro-tabela-wrapper">
+        <table class="financeiro-tabela">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Tipo</th>
+              <th>Situação</th>
+              <th>Valor</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+
+          <tbody id="listaLancamentos">
+            <tr>
+              <td colspan="7">Carregando lançamentos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <p class="financeiro-rodape">
+      Os dados financeiros devem ser acessíveis somente ao administrador autorizado.
+    </p>
+
+  </main>
+
+  <script type="module" src="js/financeiro.js"></script>
+</body>
+</html>
