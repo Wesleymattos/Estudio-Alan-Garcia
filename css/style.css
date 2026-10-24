@@ -5426,5 +5426,83 @@ footer a:hover {
 }
 
 
+/* Botão voltar ao site na tela de login */
+.login-back-site {
+  position: fixed;
+  top: 22px;
+  left: 24px;
+  z-index: 1000;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 10px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+
+  background: rgba(15, 17, 21, 0.88);
+  color: #f5f5f5;
+
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.login-back-site:hover {
+  background: rgba(255, 122, 24, 0.12);
+  border-color: #ff7a18;
+}
+
+.login-back-site i {
+  color: #ff7a18;
+}
+
+@media (max-width: 600px) {
+  .login-back-site {
+    top: 12px;
+    left: 12px;
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+}
+
+
+
+.login-back-site {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+
+  background: #15171b;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.login-back-site:hover {
+  border-color: #ff7a18;
+  color: #ff7a18;
+}
+
+@media (max-width: 600px) {
+  .login-back-site {
+    top: 12px;
+    left: 12px;
+  }
+}
+
 
 
