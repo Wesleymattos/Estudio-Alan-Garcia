@@ -31,6 +31,8 @@
 
   <link rel="stylesheet" href="css/style.css">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">  
+
   <!-- Open Graph -->
   <meta property="og:type" content="website">
 
@@ -66,52 +68,46 @@
        HEADER
        ============================================================ -->
 
-  <header class="site-header">
+    <!-- HEADER PADRONIZADO -->
+  <header class="site-header premium-header">
 
-    <a href="index.html" class="brand brand-logo" data-link>
-      <img
-        src="assets/logo-alan-garcia.png"
-        alt="Studio Alan Garcia"
-      >
-    </a>
+    <div class="brand-area">
+      <a href="index.html" class="brand brand-logo" data-link aria-label="Studio Alan Garcia">
+        <img src="assets/logo-alan-garcia.png" alt="Studio Alan Garcia">
+      </a>
+      <span class="cref">CREF 030854-G/RS</span>
+    </div>
 
-    <button class="menu-toggle">
+    <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
       <span></span>
       <span></span>
       <span></span>
     </button>
 
-    <nav class="main-nav">
-
-      <a href="index.html" data-link>
-        Início
-      </a>
-
-      <a
-        class="active"
-        href="sobre.html"
-        data-link
-      >
-        Sobre
-      </a>
-
-      <a href="servicos.html" data-link>
-        Serviços
-      </a>
-
-      <a href="contato.html" data-link>
-        Contato
-      </a>
-
-      <a
-        class="nav-login"
-        href="login.html"
-        data-link
-      >
-        Área do aluno
-      </a>
-
+    <nav class="main-nav premium-nav">
+      <a href="index.html" data-link>Início</a>
+      <a class="active" href="sobre.html" data-link aria-current="page">Sobre</a>
+      <a href="servicos.html" data-link>Serviços</a>
+      <a href="index.html#depoimentos" data-link>Depoimentos</a>
+      <a href="videos.html" data-link>Vídeos</a>
+      <a href="contato.html" data-link>Contato</a>
     </nav>
+
+    <div class="header-actions">
+      <a href="login.html" class="header-student" data-link>
+        <span>▣</span> Login
+      </a>
+
+      <a
+        href="https://wa.me/5551980135744?text=Ol%C3%A1%21%20Vim%20pelo%20site%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20Studio%21"
+        class="header-whatsapp"
+        target="_blank"
+        rel="noopener"
+      >
+        <i class="fa-brands fa-whatsapp"></i>
+        Fale Conosco
+      </a>
+    </div>
 
   </header>
 
@@ -144,41 +140,58 @@
          SOBRE O STUDIO
          ========================================================== -->
 
-    <section class="section split-section about-grid">
+    
+<section class="section split-section about-grid">
 
-      <div class="portrait-placeholder reveal">
+  <!-- FOTO DO PROFESSOR -->
+  <div class="portrait-placeholder reveal">
+    <img
+      class="about-portrait"
+      src="assets/alan-garcia.jpg"
+      alt="Professor Alan Garcia, responsável pelo Studio Alan Garcia"
+      loading="lazy"
+    >
+  </div>
 
-        <div class="portrait-inner">
-          AG
-        </div>
+  <!-- APRESENTAÇÃO -->
+  <div class="section-copy reveal">
 
-      </div>
+    <p class="eyebrow">CONHEÇA O PROFESSOR</p>
 
+    <h2>
+      Alan Garcia:
+      <span>treinamento com propósito.</span>
+    </h2>
 
-      <div class="section-copy reveal">
+    <p>
+      O professor Alan Garcia atua com treinamento físico
+      personalizado, oferecendo acompanhamento próximo e
+      atenção às necessidades individuais de cada aluno.
+    </p>
 
-        <p class="eyebrow">
-          ALAN GARCIA
-        </p>
+    <p>
+      Seu trabalho valoriza a execução correta dos exercícios,
+      a consistência e a construção de uma rotina de treinos
+      alinhada aos objetivos de cada pessoa.
+    </p>
 
-        <h2>
-          Um acompanhamento mais próximo.
-        </h2>
+    <p>
+      À frente do Studio Alan Garcia, busca proporcionar um
+      ambiente acolhedor, com orientação profissional,
+      dedicação e respeito à individualidade de cada aluno.
+    </p>
 
-        <p>
-          O Studio Alan Garcia foi pensado para quem busca mais
-          do que simplesmente frequentar uma academia. Aqui,
-          o treinamento é individualizado e acompanhado de perto.
-        </p>
+    <div class="about-experience">
+      <span class="about-experience-number">Desde [ANO]</span>
+      <span class="about-experience-label">
+        Experiência profissional em treinamento físico
+      </span>
+    </div>
 
-        <p>
-          O foco é criar um ambiente onde técnica, constância
-          e evolução caminham juntos.
-        </p>
+  </div>
 
-      </div>
+</section>
 
-    </section>
 
 
     <!-- ==========================================================
@@ -255,6 +268,17 @@
     </section>
 
   </main>
+
+  
+<a
+  class="floating-whatsapp"
+  href="https://wa.me/5551980135744?text=Ol%C3%A1%21%20Vim%20pelo%20site%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20Studio%21"
+  target="_blank"
+  rel="noopener"
+  aria-label="Falar pelo WhatsApp"
+>
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
 
 
   <!-- ============================================================

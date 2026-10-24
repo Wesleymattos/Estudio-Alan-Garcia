@@ -31,6 +31,8 @@
 
   <link rel="stylesheet" href="css/style.css">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
   <!-- Open Graph -->
   <meta property="og:type" content="website">
 
@@ -66,62 +68,48 @@
        HEADER
        ============================================================ -->
 
-  <header class="site-header">
+  
+<header class="site-header premium-header">
 
-    <a
-      href="index.html"
-      class="brand brand-logo"
-      data-link
-    >
-      <img
-        src="assets/logo-alan-garcia.png"
-        alt="Studio Alan Garcia"
-      >
+  <div class="brand-area">
+    <a href="index.html" class="brand brand-logo" data-link aria-label="Studio Alan Garcia">
+      <img src="assets/logo-alan-garcia.png" alt="Studio Alan Garcia">
+    </a>
+    <span class="cref">CREF 030854-G/RS</span>
+  </div>
+
+  <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="main-nav premium-nav">
+    <a href="index.html" data-link>Início</a>
+    <a href="sobre.html" data-link>Sobre</a>
+    <a class="active" href="servicos.html" data-link aria-current="page">Serviços</a>
+    <a href="index.html#depoimentos" data-link>Depoimentos</a>
+    <a href="videos.html" data-link>Vídeos</a>
+    <a href="contato.html" data-link>Contato</a>
+  </nav>
+
+  <div class="header-actions">
+    <a href="login.html" class="header-student" data-link>
+      <span>▣</span> Login
     </a>
 
+    <a
+      href="https://wa.me/5551980135744?text=Ol%C3%A1%21%20Vim%20pelo%20site%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20Studio%21"
+      class="header-whatsapp"
+      target="_blank"
+      rel="noopener"
+    >
+      <i class="fa-brands fa-whatsapp"></i>
+      Fale Conosco
+    </a>
+  </div>
 
-    <button class="menu-toggle">
-
-      <span></span>
-      <span></span>
-      <span></span>
-
-    </button>
-
-
-    <nav class="main-nav">
-
-      <a href="index.html" data-link>
-        Início
-      </a>
-
-      <a href="sobre.html" data-link>
-        Sobre
-      </a>
-
-      <a
-        class="active"
-        href="servicos.html"
-        data-link
-      >
-        Serviços
-      </a>
-
-      <a href="contato.html" data-link>
-        Contato
-      </a>
-
-      <a
-        class="nav-login"
-        href="login.html"
-        data-link
-      >
-        Área do aluno
-      </a>
-
-    </nav>
-
-  </header>
+</header>
 
 
   <!-- ============================================================
@@ -286,6 +274,18 @@
     </section>
 
   </main>
+
+  
+<a
+  class="floating-whatsapp"
+  href="https://wa.me/5551980135744?text=Ol%C3%A1%21%20Vim%20pelo%20site%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20Studio%21"
+  target="_blank"
+  rel="noopener"
+  aria-label="Falar pelo WhatsApp"
+>
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
+
 
 
   <!-- ============================================================
