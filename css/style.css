@@ -1203,10 +1203,10 @@ footer {
 .hero-photo {
   position: absolute;
   inset: 0;
-  background-image: url("../assets/hero-studio.jpg");
+  background-image: url("../assets/foto_principal.jpeg");
   background-size: cover;
   background-position: center 48%;
-  transform: scale(1.04);
+  transform: scale(1.0);
   filter: saturate(0.88) contrast(1.06);
 }
 
