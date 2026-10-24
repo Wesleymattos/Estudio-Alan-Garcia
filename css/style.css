@@ -5505,4 +5505,156 @@ footer a:hover {
 }
 
 
+/* =========================================
+   RESPONSIVIDADE — PÁGINA SOBRE
+   ========================================= */
+
+/* Foto e apresentação */
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 64px);
+  width: 100%;
+  min-width: 0;
+}
+
+.about-grid > *,
+.about-grid .section-copy {
+  min-width: 0;
+}
+
+.about-grid .portrait-placeholder {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+.about-grid .about-portrait {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 620px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: inherit;
+}
+
+.about-grid .section-copy h2 {
+  overflow-wrap: break-word;
+  line-height: 1.2;
+}
+
+.about-grid .section-copy p {
+  overflow-wrap: break-word;
+  line-height: 1.75;
+}
+
+.about-experience {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+.about-experience-number,
+.about-experience-label {
+  overflow-wrap: break-word;
+}
+
+/* Pilares */
+.values-section,
+.values-section .value-grid,
+.values-section .value {
+  min-width: 0;
+}
+
+.values-section .value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.values-section .value {
+  overflow-wrap: break-word;
+}
+
+/* Tablets e telas menores */
+@media (max-width: 900px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 28px;
+  }
+
+  .about-grid .section-copy h2 {
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+  }
+
+  .values-section .value-grid {
+    gap: 14px;
+  }
+}
+
+/* Celulares */
+@media (max-width: 640px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .about-grid .portrait-placeholder {
+    width: 100%;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+
+  .about-grid .about-portrait {
+    width: 100%;
+    max-height: none;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .about-grid .section-copy {
+    width: 100%;
+  }
+
+  .about-grid .section-copy h2 {
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+  }
+
+  .about-grid .section-copy p {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .about-experience {
+    margin-top: 20px;
+  }
+
+  .values-section .value-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .values-section .value {
+    padding: 20px;
+  }
+}
+
+/* Celulares estreitos */
+@media (max-width: 380px) {
+  .about-grid .section-copy h2 {
+    font-size: 1.6rem;
+  }
+
+  .values-section .value {
+    padding: 16px;
+  }
+}
+
 
