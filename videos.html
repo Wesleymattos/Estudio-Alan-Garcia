@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090a0c">
+
+  <meta
+    name="description"
+    content="Conheça os vídeos do Studio Alan Garcia e acompanhe nosso trabalho com treinamento personalizado."
+  >
+
+  <title>Vídeos | Studio Alan Garcia</title>
+
+  <!-- CSS principal do site -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- CSS exclusivo da página de vídeos -->
+  <link rel="stylesheet" href="css/videos.css">
+
+  <!-- Ícones -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+</head>
+
+<body>
+
+  <div class="page-transition"></div>
+
+  <!-- CABEÇALHO -->
+  <header class="site-header premium-header">
+
+    <div class="brand-area">
+      <a
+        href="index.html"
+        class="brand brand-logo"
+        data-link
+        aria-label="Studio Alan Garcia - Início"
+      >
+        <img
+          src="assets/logo-alan-garcia.png"
+          alt="Studio Alan Garcia"
+        >
+      </a>
+
+      <span class="cref">CREF 030854-G/RS</span>
+    </div>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label="Abrir menu"
+      aria-expanded="false"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- MENU PRINCIPAL -->
+    <nav class="main-nav premium-nav">
+
+      <a href="index.html" data-link>
+        Início
+      </a>
+
+      <a href="sobre.html" data-link>
+        Sobre
+      </a>
+
+      <a href="servicos.html" data-link>
+        Serviços
+      </a>
+
+      <a href="index.html#depoimentos" data-link>
+        Depoimentos
+      </a>
+
+      <a
+        href="videos.html"
+        class="active"
+        data-link
+        aria-current="page"
+      >
+        Vídeos
+      </a>
+
+      <a href="contato.html" data-link>
+        Contato
+      </a>
+
+    </nav>
+
+    <!-- AÇÕES DO CABEÇALHO -->
+    <div class="header-actions">
+
+      <a href="login.html" class="header-student" data-link>
+        <span>▣</span>
+        Área do Aluno
+      </a>
+
+      <a
+        href="https://wa.me/5551980135744"
+        class="header-whatsapp"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="fa-brands fa-whatsapp"></i>
+        Fale Conosco
+      </a>
+
+    </div>
+
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main>
+
+    <section class="videos-page">
+
+      <div class="videos-wrap">
+
+        <!-- APRESENTAÇÃO -->
+        <div class="videos-intro">
+
+          <p class="eyebrow">
+            VÍDEOS DO STUDIO
+          </p>
+
+          <h1>
+            Conheça nosso trabalho
+            <span>em movimento.</span>
+          </h1>
+
+          <p>
+            Treinamento, dedicação e evolução.
+            Explore nossos vídeos e conheça mais sobre
+            o trabalho desenvolvido no Studio Alan Garcia.
+          </p>
+
+        </div>
+
+        <!-- GALERIA -->
+        <section
+          class="videos-panel"
+          aria-label="Galeria de vídeos"
+        >
+
+          <div class="videos-panel-head">
+
+            <div>
+
+              <span class="videos-kicker">
+                STUDIO ALAN GARCIA
+              </span>
+
+              <h2>
+                Explore nossa coleção
+              </h2>
+
+              <p>
+                Utilize as setas para navegar pelos vídeos.
+              </p>
+
+            </div>
+
+            <!-- SETAS DO CARROSSEL -->
+            <div class="videos-controls">
+
+              <button
+                id="videosPrev"
+                type="button"
+                aria-label="Vídeos anteriores"
+              >
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+
+              <button
+                id="videosNext"
+                type="button"
+                aria-label="Próximos vídeos"
+              >
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+
+            </div>
+
+          </div>
+
+          <!--
+            CARROSSEL DE VÍDEOS
+
+            Para adicionar um vídeo, copie um cartão completo
+            e altere o título, a descrição, a capa e o data-video.
+          -->
+          <div
+            class="videos-carousel"
+            id="videosCarousel"
+          >
+<!-- VÍDEO 1 -->
+<button
+  class="videos-card"
+  type="button"
+  data-video="videos/bolo-studio.mp4"
+  data-title="O Bolo do Studio"
+>
+  <div class="videos-thumb">
+    <img
+      src="videos/capa-bolo.png"
+      alt="O Bolo do Studio"
+      loading="lazy"
+    >
+    <span class="videos-play">
+      <i class="fa-solid fa-play"></i>
+    </span>
+    <span class="videos-index">01</span>
+  </div>
+
+  <div class="videos-card-info">
+    <small>STUDIO</small>
+    <h3>O Bolo do Studio</h3>
+    <p>Um momento especial no nosso studio.</p>
+  </div>
+</button>
+
+           <!-- VÍDEO 2 -->
+<button
+  class="videos-card"
+  type="button"
+  data-video="videos/equipamentos.mp4"
+  data-title="Nossos Equipamentos"
+>
+  <div class="videos-thumb">
+    <img
+      src="videos/capa-equipamentos.png"
+      alt="Nossos Equipamentos"
+      loading="lazy"
+    >
+    <span class="videos-play">
+      <i class="fa-solid fa-play"></i>
+    </span>
+    <span class="videos-index">02</span>
+  </div>
+
+  <div class="videos-card-info">
+    <small>ESTRUTURA</small>
+    <h3>Nossos Equipamentos</h3>
+    <p>Conheça a estrutura do nosso studio.</p>
+  </div>
+</button>
+
+           <!-- VÍDEO 3 -->
+<button
+  class="videos-card"
+  type="button"
+  data-video="videos/apresentacao-studio.mp4"
+  data-title="Venha para o Alan Studio"
+>
+  <div class="videos-thumb">
+    <img
+      src="videos/capa-studio.png"
+      alt="Venha para o Alan Studio"
+      loading="lazy"
+    >
+    <span class="videos-play">
+      <i class="fa-solid fa-play"></i>
+    </span>
+    <span class="videos-index">03</span>
+  </div>
+
+  <div class="videos-card-info">
+    <small>CONVITE</small>
+    <h3>Venha para o Alan Studio</h3>
+    <p>Seu próximo passo começa aqui.</p>
+  </div>
+</button>
+
+          </div>
+
+          <!-- CONTADOR -->
+          <div class="videos-footer">
+
+            <span id="videosCounter">
+              01 — 03
+            </span>
+
+            <span>
+              SEU MOVIMENTO. SUA EVOLUÇÃO.
+            </span>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL DE REPRODUÇÃO -->
+  <div
+    class="videos-modal"
+    id="videosModal"
+    hidden
+  >
+
+    <!-- Fundo escuro: clicar nele fecha o vídeo -->
+    <div
+      class="videos-backdrop"
+      data-close-videos
+    ></div>
+
+    <section
+      class="videos-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="videosModalTitle"
+    >
+
+      <div class="videos-dialog-head">
+
+        <h2 id="videosModalTitle">
+          Assistir vídeo
+        </h2>
+
+        <button
+          class="videos-close"
+          id="videosClose"
+          type="button"
+          aria-label="Fechar vídeo"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+      </div>
+
+      <!-- O JavaScript insere o player aqui -->
+      <div
+        class="videos-player"
+        id="videosPlayer"
+      ></div>
+
+    </section>
+
+  </div>
+
+  <!-- JavaScript exclusivo da página de vídeos -->
+  <script src="js/videos.js"></script>
+
+</body>
+</html>

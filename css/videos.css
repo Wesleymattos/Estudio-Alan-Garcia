@@ -1,0 +1,422 @@
+
+/* =========================================
+   STUDIO ALAN GARCIA — PÁGINA DE VÍDEOS
+   Arquivo: css/videos.css
+   ========================================= */
+
+.videos-page {
+  min-height: 70vh;
+  padding: 70px 24px 90px;
+}
+
+.videos-wrap {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+/* Introdução */
+
+.videos-intro {
+  max-width: 720px;
+  margin: 0 auto 42px;
+  text-align: center;
+}
+
+.videos-intro .eyebrow {
+  color: #ff7a18;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.videos-intro h1 {
+  margin: 12px 0 16px;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.08;
+}
+
+.videos-intro h1 span {
+  color: #ff7a18;
+}
+
+.videos-intro p {
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
+  opacity: .78;
+}
+
+/* Painel da galeria */
+
+.videos-panel {
+  padding: clamp(18px, 3vw, 34px);
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #20232a, #121419);
+  color: #f7f7f8;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .2);
+}
+
+.videos-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 26px;
+}
+
+.videos-kicker {
+  color: #ff7a18;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.videos-panel-head h2 {
+  margin: 8px 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.videos-panel-head p {
+  margin: 0;
+  color: #aeb2bc;
+  line-height: 1.6;
+}
+
+/* Setas de navegação */
+
+.videos-controls {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.videos-controls button {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, .04);
+  cursor: pointer;
+  transition:
+    color .2s ease,
+    background .2s ease,
+    border-color .2s ease,
+    transform .2s ease;
+}
+
+.videos-controls button:hover {
+  color: #17191e;
+  background: #ff7a18;
+  border-color: #ff7a18;
+  transform: translateY(-2px);
+}
+
+.videos-controls button:focus-visible,
+.videos-card:focus-visible,
+.videos-close:focus-visible {
+  outline: 2px solid #ff7a18;
+  outline-offset: 4px;
+}
+
+/* Carrossel horizontal */
+
+.videos-carousel {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 3px 2px 16px;
+}
+
+.videos-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cartões */
+
+.videos-card {
+  flex: 0 0 calc((100% - 44px) / 3);
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  color: inherit;
+  background: #242830;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 17px;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition:
+    transform .25s ease,
+    border-color .25s ease;
+}
+
+.videos-card:hover {
+  transform: translateY(-5px);
+  border-color: #ff7a18;
+}
+
+/* Capa do vídeo */
+
+.videos-thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #101216;
+}
+
+.videos-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+
+.videos-card:hover .videos-thumb img {
+  transform: scale(1.05);
+}
+
+.videos-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, .38),
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+/* Botão de reprodução sobre a capa */
+
+.videos-play {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #17191e;
+  pointer-events: none;
+}
+
+.videos-play i {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding-left: 4px;
+  border-radius: 50%;
+  background: #ff7a18;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .35);
+  transition: transform .2s ease;
+}
+
+.videos-card:hover .videos-play i {
+  transform: scale(1.1);
+}
+
+/* Número do cartão */
+
+.videos-index {
+  position: absolute;
+  z-index: 1;
+  top: 13px;
+  left: 13px;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, .62);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+/* Textos dos cartões */
+
+.videos-card-info {
+  padding: 19px;
+}
+
+.videos-card-info small {
+  color: #ff7a18;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.videos-card-info h3 {
+  margin: 9px 0 7px;
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.videos-card-info p {
+  margin: 0;
+  color: #aeb2bc;
+  font-size: .88rem;
+  line-height: 1.6;
+}
+
+/* Rodapé da galeria */
+
+.videos-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 15px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  color: #aeb2bc;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+/* Modal de reprodução */
+
+.videos-modal[hidden] {
+  display: none !important;
+}
+
+.videos-modal {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.videos-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .86);
+  backdrop-filter: blur(8px);
+}
+
+.videos-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(960px, 100%);
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 18px;
+  background: #20232a;
+  color: #fff;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, .55);
+}
+
+.videos-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.videos-dialog-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.videos-close {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 50%;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+}
+
+.videos-close:hover {
+  color: #17191e;
+  background: #ff7a18;
+}
+
+.videos-player {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+}
+
+.videos-player iframe,
+.videos-player video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Bloqueia a rolagem de fundo quando o modal está aberto */
+
+body.videos-modal-open {
+  overflow: hidden;
+}
+
+/* Tablets */
+
+@media (max-width: 950px) {
+  .videos-card {
+    flex-basis: calc((100% - 22px) / 2);
+  }
+}
+
+/* Celulares */
+
+@media (max-width: 600px) {
+  .videos-page {
+    padding: 48px 16px 65px;
+  }
+
+  .videos-panel {
+    border-radius: 17px;
+  }
+
+  .videos-panel-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .videos-card {
+    flex-basis: 84%;
+  }
+
+  .videos-footer {
+    font-size: .58rem;
+  }
+
+  .videos-dialog {
+    padding: 12px;
+  }
+
+  .videos-dialog-head h2 {
+    font-size: 1rem;
+  }
+}
+
+/* Respeita a preferência por menos animações */
+
+@media (prefers-reduced-motion: reduce) {
+  .videos-carousel {
+    scroll-behavior: auto;
+  }
+
+  .videos-card,
+  .videos-thumb img,
+  .videos-play i,
+  .videos-controls button {
+    transition: none;
+  }
+}
