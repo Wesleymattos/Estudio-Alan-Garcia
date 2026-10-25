@@ -17,7 +17,9 @@
   const modalTitle = document.getElementById("videosModalTitle");
 
   if (!carousel || !modal || !player || !closeButton || !modalTitle) {
-    console.error("Não foi possível encontrar os elementos da página de vídeos.");
+    console.error(
+      "Não foi possível encontrar os elementos da página de vídeos."
+    );
     return;
   }
 
@@ -55,7 +57,9 @@
 
     carousel.scrollTo({
       left: nextPosition,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      behavior: window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
         ? "auto"
         : "smooth"
     });
@@ -65,11 +69,15 @@
   const nextButton = document.getElementById("videosNext");
 
   if (previousButton) {
-    previousButton.addEventListener("click", () => moveCarousel(-1));
+    previousButton.addEventListener("click", () => {
+      moveCarousel(-1);
+    });
   }
 
   if (nextButton) {
-    nextButton.addEventListener("click", () => moveCarousel(1));
+    nextButton.addEventListener("click", () => {
+      moveCarousel(1);
+    });
   }
 
   /* =========================================
@@ -85,7 +93,7 @@
     cards.forEach((card, index) => {
       const distance = Math.abs(
         card.getBoundingClientRect().left -
-        carousel.getBoundingClientRect().left
+          carousel.getBoundingClientRect().left
       );
 
       if (distance < nearestDistance) {
@@ -100,13 +108,17 @@
       String(cards.length).padStart(2, "0");
   }
 
-  carousel.addEventListener("scroll", updateCounter, { passive: true });
+  carousel.addEventListener("scroll", updateCounter, {
+    passive: true
+  });
+
   window.addEventListener("resize", updateCounter);
+
   updateCounter();
 
   /* =========================================
      IDENTIFICAÇÃO DO VÍDEO
-     Aceita arquivos locais, MP4, WEBM, OGG e YouTube.
+     Aceita MP4, WEBM, OGG e YouTube.
      ========================================= */
 
   function parseVideo(url) {
@@ -116,7 +128,7 @@
 
     const value = url.trim();
 
-    // Aceita caminhos locais como videos/bolo-studio.mp4
+    // Arquivos locais ou URLs de vídeos.
     if (/\.(mp4|webm|ogg)(?:[?#].*)?$/i.test(value)) {
       return {
         type: "file",
@@ -128,7 +140,7 @@
       const parsed = new URL(value, window.location.href);
       const hostname = parsed.hostname.toLowerCase();
 
-      // Link curto do YouTube
+      // Links curtos do YouTube.
       if (
         hostname === "youtu.be" &&
         ["http:", "https:"].includes(parsed.protocol)
@@ -139,7 +151,7 @@
         };
       }
 
-      // Links normais, incorporados ou Shorts do YouTube
+      // Links normais, incorporados ou Shorts do YouTube.
       const youtubeHosts = [
         "youtube.com",
         "www.youtube.com",
@@ -158,7 +170,9 @@
           };
         }
 
-        const match = parsed.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/);
+        const match = parsed.pathname.match(
+          /^\/(?:embed|shorts)\/([^/]+)/
+        );
 
         if (match) {
           return {
@@ -168,7 +182,10 @@
         }
       }
     } catch (error) {
-      console.error("Erro ao interpretar o endereço do vídeo:", error);
+      console.error(
+        "Erro ao interpretar o endereço do vídeo:",
+        error
+      );
     }
 
     return null;
@@ -200,6 +217,7 @@
     }
 
     previouslyFocusedElement = document.activeElement;
+
     modalTitle.textContent = videoTitle;
     player.replaceChildren();
 
@@ -212,6 +230,7 @@
         "?autoplay=1&rel=0";
 
       iframe.title = videoTitle;
+
       iframe.allow =
         "accelerometer; autoplay; clipboard-write; encrypted-media; " +
         "gyroscope; picture-in-picture; web-share";
@@ -230,14 +249,20 @@
       video.preload = "metadata";
 
       video.addEventListener("error", () => {
-        console.error("Não foi possível carregar o arquivo:", source.url);
+        console.error(
+          "Não foi possível carregar o arquivo:",
+          source.url
+        );
       });
 
       player.appendChild(video);
 
       const playPromise = video.play();
 
-      if (playPromise && typeof playPromise.catch === "function") {
+      if (
+        playPromise &&
+        typeof playPromise.catch === "function"
+      ) {
         playPromise.catch(() => {
           // O visitante pode iniciar o vídeo pelos controles.
         });
@@ -246,6 +271,7 @@
 
     modal.hidden = false;
     document.body.classList.add("videos-modal-open");
+
     closeButton.focus();
   }
 
@@ -257,6 +283,7 @@
     if (modal.hidden) return;
 
     player.replaceChildren();
+
     modal.hidden = true;
     document.body.classList.remove("videos-modal-open");
 
@@ -271,7 +298,9 @@
   }
 
   cards.forEach(card => {
-    card.addEventListener("click", () => openVideo(card));
+    card.addEventListener("click", () => {
+      openVideo(card);
+    });
   });
 
   closeButton.addEventListener("click", closeVideo);
@@ -289,28 +318,12 @@
   });
 
   /* =========================================
-     MENU PARA DISPOSITIVOS MÓVEIS
+     MENU MOBILE
+     IMPORTANTE:
+     O menu é controlado exclusivamente pelo
+     js/main.js. Não adicionar outro listener
+     para .menu-toggle neste arquivo.
      ========================================= */
-
-  const menuToggle = document.querySelector(".menu-toggle");
-  const nav = document.querySelector(".main-nav");
-
-  if (menuToggle && nav) {
-    menuToggle.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("open");
-
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-      document.body.classList.toggle("menu-open", isOpen);
-    });
-
-    nav.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("open");
-        menuToggle.setAttribute("aria-expanded", "false");
-        document.body.classList.remove("menu-open");
-      });
-    });
-  }
 
   console.log("Página de vídeos inicializada com sucesso.");
 })();
