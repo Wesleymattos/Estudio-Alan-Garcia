@@ -5824,3 +5824,231 @@ footer a:hover {
     display: none;
   }
 }
+
+
+
+/* =========================================
+   FORMAÇÃO E ESPECIALIZAÇÕES — SOBRE
+   ========================================= */
+
+.qualifications-section {
+  padding-top: 70px;
+  padding-bottom: 90px;
+}
+
+.qualifications-section .section-heading {
+  margin-bottom: 35px;
+}
+
+.qualifications-section .section-heading h2 span {
+  display: block;
+}
+
+.qualifications-section .section-heading > div > p:last-child {
+  max-width: 650px;
+  line-height: 1.8;
+  opacity: 0.78;
+}
+
+.qualification-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.qualification-card {
+  padding: 30px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.015)
+  );
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.qualification-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.qualification-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.09);
+  font-size: 22px;
+}
+
+.qualification-label {
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  opacity: 0.65;
+}
+
+.qualification-card h3 {
+  margin: 0 0 14px;
+  font-size: 19px;
+  line-height: 1.45;
+}
+
+.qualification-card > p:last-child {
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  opacity: 0.78;
+}
+
+.qualification-cref {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+  padding: 22px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.qualification-cref > i {
+  font-size: 25px;
+}
+
+.qualification-cref div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qualification-cref span {
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  opacity: 0.65;
+}
+
+.qualification-cref strong {
+  font-size: 17px;
+}
+
+@media (max-width: 850px) {
+  .qualification-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .qualification-card {
+    padding: 25px 22px;
+  }
+
+  .qualifications-section {
+    padding-top: 45px;
+    padding-bottom: 60px;
+  }
+
+  .qualification-cref {
+    padding: 20px;
+  }
+}
+
+
+
+/* =========================================
+   CERTIFICADO — PÁGINA SOBRE
+   ========================================= */
+
+.certificate-section {
+  padding-top: 55px;
+  padding-bottom: 75px;
+}
+
+.certificate-card {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: center;
+  gap: 35px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.certificate-info h3 {
+  margin: 12px 0;
+  font-size: 26px;
+}
+
+.certificate-info > p {
+  line-height: 1.7;
+  opacity: 0.8;
+}
+
+.certificate-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.certificate-details span {
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.certificate-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.certificate-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.certificate-image-link {
+  display: block;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.certificate-image-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.certificate-image-link:hover img {
+  transform: scale(1.025);
+}
+
+@media (max-width: 800px) {
+  .certificate-card {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 20px;
+  }
+
+  .certificate-info h3 {
+    font-size: 22px;
+  }
+}
