@@ -7,6 +7,8 @@ let app = null;
 let auth = null;
 let db = null;
 let firebaseFns = null;
+let storage = null;
+
 
 export async function initFirebase() {
 
@@ -15,19 +17,21 @@ export async function initFirebase() {
     return null;
   }
 
-  if (app && auth && db && firebaseFns) {
-    return {
-      app,
-      auth,
-      db,
-      firebaseFns
-    };
-  }
+  if (app && auth && db && storage && firebaseFns) {
+  return {
+    app,
+    auth,
+    db,
+    storage,
+    firebaseFns
+  };
+}
 
   const [
     firebaseApp,
     firebaseAuth,
-    firebaseDatabase
+    firebaseDatabase,
+    firebaseStorage
   ] = await Promise.all([
 
     import(
@@ -40,6 +44,9 @@ export async function initFirebase() {
 
     import(
       "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"
+    ),
+    import(
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"
     )
 
   ]);
@@ -49,6 +56,8 @@ export async function initFirebase() {
   auth = firebaseAuth.getAuth(app);
 
   db = firebaseDatabase.getDatabase(app);
+
+  storage = firebaseStorage.getStorage(app);
 
  firebaseFns = {
   signInWithEmailAndPassword: firebaseAuth.signInWithEmailAndPassword,
@@ -61,13 +70,19 @@ get: firebaseDatabase.get,
 set: firebaseDatabase.set,
 push: firebaseDatabase.push,
 remove: firebaseDatabase.remove,
-update: firebaseDatabase.update
+update: firebaseDatabase.update,
+getStorage: firebaseStorage.getStorage,
+storageRef: firebaseStorage.ref,
+uploadBytes: firebaseStorage.uploadBytes,
+getDownloadURL: firebaseStorage.getDownloadURL,
+deleteObject: firebaseStorage.deleteObject
 
 };
   return {
-    app,
-    auth,
-    db,
-    firebaseFns
-  };
+  app,
+  auth,
+  db,
+  storage,
+  firebaseFns
+};
 }
