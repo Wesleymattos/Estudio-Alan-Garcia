@@ -1,6 +1,9 @@
 
-const GOOGLE_CLIENT_ID = "653401583603-968g4crb4p2pf5n08ciha54tpq1akvpf.apps.googleusercontent.com";
-const GOOGLE_SCOPES = "https://www.googleapis.com/auth/drive.file";
+const GOOGLE_CLIENT_ID =
+  "653401583603-968g4crb4p2pf5n08ciha54tpq1akvpf.apps.googleusercontent.com";
+
+const GOOGLE_SCOPES =
+  "https://www.googleapis.com/auth/drive.file";
 
 let tokenClient = null;
 let accessToken = null;
@@ -24,13 +27,22 @@ function carregarGoogleIdentityServices() {
       if (window.google?.accounts?.oauth2) {
         resolve();
       } else {
-        reject(new Error("Não foi possível carregar o Google Identity Services."));
+        carregandoGoogle = null;
+        reject(
+          new Error(
+            "Não foi possível carregar o Google Identity Services."
+          )
+        );
       }
     };
 
     script.onerror = () => {
       carregandoGoogle = null;
-      reject(new Error("Falha ao carregar a biblioteca de autenticação do Google."));
+      reject(
+        new Error(
+          "Falha ao carregar a biblioteca de autenticação do Google."
+        )
+      );
     };
 
     document.head.appendChild(script);
@@ -39,9 +51,9 @@ function carregarGoogleIdentityServices() {
   return carregandoGoogle;
 }
 
-export async function conectarGoogleDrive() {
-  if (GOOGLE_CLIENT_ID.startsWith("COLE_AQUI")) {
-    throw new Error("Configure o ID do cliente OAuth em google_drive_auth.js.");
+export async function conectarGoogleDrive(emailFirebase = "") {
+  if (!GOOGLE_CLIENT_ID) {
+    throw new Error("O ID do cliente OAuth não está configurado.");
   }
 
   await carregarGoogleIdentityServices();
@@ -57,16 +69,30 @@ export async function conectarGoogleDrive() {
           return;
         }
 
+        if (!resposta.access_token) {
+          reject(
+            new Error("O Google não retornou um token de acesso.")
+          );
+          return;
+        }
+
         accessToken = resposta.access_token;
         resolve(accessToken);
       },
 
       error_callback: (erro) => {
-        reject(new Error(erro.message || "Falha na autorização Google."));
+        reject(
+          new Error(
+            erro.message || "A autorização do Google foi interrompida."
+          )
+        );
       }
     });
 
-    tokenClient.requestAccessToken({ prompt: "consent" });
+    tokenClient.requestAccessToken({
+      prompt: "select_account",
+      ...(emailFirebase ? { login_hint: emailFirebase } : {})
+    });
   });
 }
 

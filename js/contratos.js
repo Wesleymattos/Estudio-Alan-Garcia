@@ -98,7 +98,9 @@ async function obterTokenValido() {
   let token = obterTokenGoogle();
 
   if (!token) {
-    token = await conectarGoogleDrive();
+    const emailFirebase = auth.currentUser?.email;
+
+    token = await conectarGoogleDrive(emailFirebase);
   }
 
   if (!token) {
