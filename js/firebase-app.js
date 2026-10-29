@@ -64,6 +64,10 @@ export async function initFirebase() {
   signOut: firebaseAuth.signOut,
   onAuthStateChanged: firebaseAuth.onAuthStateChanged,
 
+    EmailAuthProvider: firebaseAuth.EmailAuthProvider,
+  reauthenticateWithCredential: firebaseAuth.reauthenticateWithCredential,
+  updatePassword: firebaseAuth.updatePassword,
+
 
 ref: firebaseDatabase.ref,
 get: firebaseDatabase.get,

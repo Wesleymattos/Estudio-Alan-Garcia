@@ -643,6 +643,96 @@ async function logoutStudent() {
 }
 
 
+ // ============================================================
+ // ALTERAR SENHA DO ALUNO
+ // ============================================================
+
+function setupPasswordChange() {
+  const toggleButton = $("#togglePasswordForm");
+  const form = $("#changePasswordForm");
+  const message = $("#passwordChangeMessage");
+  const submitButton = $("#submitPasswordChange");
+
+  if (!toggleButton || !form) return;
+
+  toggleButton.addEventListener("click", () => {
+    form.hidden = !form.hidden;
+    toggleButton.setAttribute(
+      "aria-expanded",
+      String(!form.hidden)
+    );
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const currentPassword = $("#currentPassword").value;
+    const newPassword = $("#newPassword").value;
+    const confirmNewPassword = $("#confirmNewPassword").value;
+
+    message.textContent = "";
+    message.style.color = "";
+
+    if (newPassword.length < 6) {
+      message.textContent = "A nova senha precisa ter pelo menos 6 caracteres.";
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      message.textContent = "A confirmação da nova senha não corresponde.";
+      return;
+    }
+
+    const user = firebaseFns.getAuth
+      ? firebaseFns.getAuth()
+      : auth.currentUser;
+
+    if (!user || !user.email) {
+      message.textContent = "Não foi possível identificar sua conta. Entre novamente.";
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Salvando...";
+
+    try {
+      const credential = await firebaseFns.EmailAuthProvider.credential(
+        user.email,
+        currentPassword
+      );
+
+      await firebaseFns.reauthenticateWithCredential(user, credential);
+      await firebaseFns.updatePassword(user, newPassword);
+
+      message.style.color = "#22c55e";
+      message.textContent = "Senha alterada com sucesso!";
+      form.reset();
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error);
+
+      message.style.color = "#ef4444";
+
+      if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password" ||
+        error.code === "auth/invalid-login-credentials"
+      ) {
+        message.textContent = "A senha atual está incorreta.";
+      } else if (error.code === "auth/weak-password") {
+        message.textContent = "Escolha uma senha mais forte.";
+      } else if (error.code === "auth/requires-recent-login") {
+        message.textContent = "Sua sessão expirou. Entre novamente e tente outra vez.";
+      } else {
+        message.textContent = "Não foi possível alterar a senha. Tente novamente.";
+      }
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Salvar nova senha";
+    }
+  });
+}
+
+
 // ============================================================
 // VERIFICAR USUÁRIO
 // ============================================================
@@ -855,6 +945,8 @@ async function initStudentArea() {
 
     firebaseFns =
       firebase.firebaseFns;
+
+      setupPasswordChange();
 
 
     // --------------------------------------------------------

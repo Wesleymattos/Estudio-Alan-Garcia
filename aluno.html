@@ -676,6 +676,71 @@
         </div>
 
 
+        
+<!-- SEGURANÇA DA CONTA -->
+<article class="student-data-card" id="studentPasswordCard">
+  <h3>
+    <i class="fa-solid fa-lock"></i>
+    Segurança da conta
+  </h3>
+
+  <p>Altere sua senha de acesso à área do aluno.</p>
+
+  <button
+    type="button"
+    id="togglePasswordForm"
+    class="student-logout"
+  >
+    <i class="fa-solid fa-key"></i>
+    Alterar senha
+  </button>
+
+  <form id="changePasswordForm" hidden>
+    <div class="student-data-item">
+      <label for="currentPassword">Senha atual</label>
+      <input
+        type="password"
+        id="currentPassword"
+        autocomplete="current-password"
+        required
+      >
+    </div>
+
+    <div class="student-data-item">
+      <label for="newPassword">Nova senha</label>
+      <input
+        type="password"
+        id="newPassword"
+        autocomplete="new-password"
+        minlength="6"
+        required
+      >
+    </div>
+
+    <div class="student-data-item">
+      <label for="confirmNewPassword">Confirmar nova senha</label>
+      <input
+        type="password"
+        id="confirmNewPassword"
+        autocomplete="new-password"
+        minlength="6"
+        required
+      >
+    </div>
+
+    <p id="passwordChangeMessage" role="status" aria-live="polite"></p>
+
+    <button
+      type="submit"
+      class="student-logout"
+      id="submitPasswordChange"
+    >
+      Salvar nova senha
+    </button>
+  </form>
+</article>
+
+
       </section>
 
 
