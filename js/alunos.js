@@ -144,6 +144,86 @@ function closeStudentModal() {
 }
 
 
+
+
+/**
+ * Abre o formulário para editar um aluno existente.
+ */
+function openStudentEditModal(student) {
+  if (!student || !student.uid) {
+    alert("Não foi possível identificar o aluno.");
+    return;
+  }
+
+  editingStudentUid = student.uid;
+  editingStudentData = student;
+
+  const modal = $("#studentModal");
+  if (!modal) return;
+
+  // Atualiza o título do modal
+  const eyebrow = modal.querySelector(".eyebrow");
+  const title = modal.querySelector(".student-modal-header h2");
+  const description = modal.querySelector(".student-modal-header p");
+
+  if (eyebrow) eyebrow.textContent = "EDITAR CADASTRO";
+  if (title) title.textContent = "Editar aluno";
+  if (description) description.textContent = "Altere os dados cadastrais do aluno.";
+
+  // Dados pessoais
+  $("#studentName").value = student.nomeCompleto || "";
+  $("#studentEmail").value = student.email || "";
+  $("#studentWhatsapp").value = student.whatsapp || "";
+  $("#studentCpf").value = student.cpf || "";
+  $("#studentBirthDate").value = student.dataNascimento || "";
+  $("#studentAge").value = student.idade ?? "";
+
+  // Endereço
+  $("#studentStreet").value = student.endereco?.rua || "";
+  $("#studentNumber").value = student.endereco?.numero || "";
+  $("#studentNeighborhood").value = student.endereco?.bairro || "";
+  $("#studentCity").value = student.endereco?.cidade || "";
+  $("#studentState").value = student.endereco?.estado || "";
+
+  // Informações do aluno
+  $("#studentInitialWeight").value =
+    student.peso?.pesoInicial ?? "";
+
+  $("#studentGoal").value = student.objetivo || "";
+  $("#studentObservation").value = student.observacao || "";
+
+  // Não permitir alterar a conta nesta etapa
+  $("#studentEmail").readOnly = true;
+
+  const passwordSection = $("#studentPassword")?.closest(
+    ".student-form-section"
+  );
+
+  if (passwordSection) {
+    passwordSection.hidden = true;
+  }
+
+  $("#studentPassword").required = false;
+  $("#studentPasswordConfirm").required = false;
+  $("#studentPassword").value = "";
+  $("#studentPasswordConfirm").value = "";
+
+  // Modo de edição
+  const saveButton = $("#saveStudentBtn");
+
+  if (saveButton) {
+    saveButton.innerHTML =
+      '<i class="fa-solid fa-floppy-disk"></i> Salvar alterações';
+  }
+
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+
+  clearStudentMessage();
+}
+
+
+
 // ============================================================
 // MENSAGENS
 // ============================================================
