@@ -907,10 +907,12 @@ function initStudentEvents() {
 // INICIALIZAÇÃO
 // ============================================================
 
+
 document.addEventListener("DOMContentLoaded", () => {
-
   initStudentEvents();
-
   initFirebase();
 
+  window.addEventListener("editStudentRequested", (event) => {
+    openStudentEditModal(event.detail);
+  });
 });

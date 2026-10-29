@@ -569,13 +569,15 @@ function viewStudent(student) {
 // EDITAR
 // ============================================================
 
+
 function editStudent(student) {
-
-  alert(
-    `A edição de ${student.nomeCompleto || "aluno"} será implementada na próxima etapa.`
+  window.dispatchEvent(
+    new CustomEvent("editStudentRequested", {
+      detail: student
+    })
   );
-
 }
+
 
 
 // ============================================================
