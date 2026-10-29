@@ -17,6 +17,13 @@ let db = null;
 let auth = null;
 let firebaseFns = null;
 
+// ============================================================
+// ESTADO DA EDIÇÃO
+// ============================================================
+
+let editingStudentUid = null;
+let editingStudentData = null;
+
 
 // ============================================================
 // UTILITÁRIO
