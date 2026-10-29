@@ -127,20 +127,61 @@ function openStudentModal() {
 }
 
 
+
 function closeStudentModal() {
-
-  const modal =
-    $("#studentModal");
-
-  if (!modal) {
-    return;
-  }
-
+  const modal = $("#studentModal");
+  if (!modal) return;
 
   modal.hidden = true;
-
   document.body.style.overflow = "";
 
+  // Limpa o estado da edição
+  editingStudentUid = null;
+  editingStudentData = null;
+
+  // Restaura o formulário para novo cadastro
+  $("#studentForm")?.reset();
+
+  const emailInput = $("#studentEmail");
+  if (emailInput) emailInput.readOnly = false;
+
+  const passwordSection = $("#studentPassword")?.closest(
+    ".student-form-section"
+  );
+
+  if (passwordSection) passwordSection.hidden = false;
+
+  const password = $("#studentPassword");
+  const passwordConfirm = $("#studentPasswordConfirm");
+
+  if (password) {
+    password.required = true;
+    password.value = "";
+  }
+
+  if (passwordConfirm) {
+    passwordConfirm.required = true;
+    passwordConfirm.value = "";
+  }
+
+  const eyebrow = modal.querySelector(".student-modal-header .eyebrow");
+  const title = modal.querySelector(".student-modal-header h2");
+  const description = modal.querySelector(".student-modal-header p");
+
+  if (eyebrow) eyebrow.textContent = "NOVO CADASTRO";
+  if (title) title.textContent = "Cadastrar aluno";
+  if (description) {
+    description.textContent = "Preencha os dados do novo aluno.";
+  }
+
+  const saveButton = $("#saveStudentBtn");
+  if (saveButton) {
+    saveButton.innerHTML =
+      '<i class="fa-solid fa-user-plus"></i> Cadastrar aluno';
+    saveButton.disabled = false;
+  }
+
+  clearStudentMessage();
 }
 
 
@@ -324,6 +365,154 @@ function calculateStudentAge() {
 }
 
 
+
+
+
+async function updateStudent(event) {
+  if (event) event.preventDefault();
+
+  if (!firebaseFns || !db || !auth?.currentUser) {
+    setStudentMessage(
+      "Sua sessão expirou ou o Firebase não está disponível.",
+      "error"
+    );
+    return;
+  }
+
+  if (!editingStudentUid || !editingStudentData) {
+    setStudentMessage("Nenhum aluno selecionado para edição.", "error");
+    return;
+  }
+
+  const name = $("#studentName").value.trim();
+  const whatsapp = $("#studentWhatsapp").value.trim();
+  const cpf = $("#studentCpf").value.trim();
+  const birthDate = $("#studentBirthDate").value;
+  const age = Number($("#studentAge").value || 0);
+
+  const street = $("#studentStreet").value.trim();
+  const number = $("#studentNumber").value.trim();
+  const neighborhood = $("#studentNeighborhood").value.trim();
+  const city = $("#studentCity").value.trim();
+  const state = $("#studentState").value.trim().toUpperCase();
+
+  const goal = $("#studentGoal").value;
+  const observation = $("#studentObservation").value.trim();
+
+  const initialWeight = Number($("#studentInitialWeight").value || 0);
+
+  if (!name || !birthDate) {
+    setStudentMessage("Preencha o nome e a data de nascimento.", "error");
+    return;
+  }
+
+  const saveButton = $("#saveStudentBtn");
+  if (saveButton) {
+    saveButton.disabled = true;
+    saveButton.innerHTML =
+      '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+  }
+
+  try {
+    const previous = editingStudentData;
+    const now = new Date().toISOString();
+
+    const previousWeight = previous.peso || {};
+
+    const studentData = {
+      ...previous,
+      nomeCompleto: name,
+      email: previous.email,
+      whatsapp,
+      cpf,
+      dataNascimento: birthDate,
+      idade: age,
+      endereco: {
+        rua: street,
+        numero: number,
+        bairro: neighborhood,
+        cidade: city,
+        estado: state
+      },
+      objetivo: goal,
+      observacao: observation,
+      
+peso: {
+  ...previousWeight,
+  pesoInicial: initialWeight,
+  dataPesoInicial:
+    initialWeight > 0
+      ? (previousWeight.dataPesoInicial || now)
+      : "",
+  pesoAtual: initialWeight,
+  dataPesoAtual:
+    initialWeight > 0 ? now : ""
+}
+
+    };
+
+    await firebaseFns.set(
+      firebaseFns.ref(db, `alunos/${editingStudentUid}`),
+      studentData
+    );
+
+    await firebaseFns.set(
+      firebaseFns.ref(db, `usuarios/${editingStudentUid}`),
+      {
+        nome: name,
+        email: previous.email,
+        tipo: "aluno",
+        ativo: previous.status !== "inativo",
+        dataCadastro: previous.dataCadastro || now
+      }
+    );
+
+    setStudentMessage("Cadastro atualizado com sucesso!", "success");
+
+    window.dispatchEvent(new CustomEvent("studentCreated"));
+
+    await new Promise(resolve => setTimeout(resolve, 700));
+
+    $("#studentForm")?.reset();
+    closeStudentModal();
+
+    editingStudentUid = null;
+    editingStudentData = null;
+
+    $("#studentEmail").readOnly = false;
+
+    const passwordSection = $("#studentPassword")?.closest(
+      ".student-form-section"
+    );
+    if (passwordSection) passwordSection.hidden = false;
+
+    const eyebrow = $("#studentModal .student-modal-header .eyebrow");
+    const title = $("#studentModal .student-modal-header h2");
+    const description = $("#studentModal .student-modal-header p");
+
+    if (eyebrow) eyebrow.textContent = "NOVO CADASTRO";
+    if (title) title.textContent = "Cadastrar aluno";
+    if (description) description.textContent = "Preencha os dados do novo aluno.";
+
+    alert("Cadastro do aluno atualizado com sucesso!");
+
+  } catch (error) {
+    console.error("Erro ao atualizar aluno:", error);
+    setStudentMessage(
+      "Não foi possível salvar as alterações. Verifique o console.",
+      "error"
+    );
+  } finally {
+    if (saveButton) {
+      saveButton.disabled = false;
+      saveButton.innerHTML =
+        '<i class="fa-solid fa-floppy-disk"></i> Salvar alterações';
+    }
+  }
+}
+
+
+
 // ============================================================
 // CADASTRAR ALUNO
 // ============================================================
@@ -331,6 +520,14 @@ function calculateStudentAge() {
 async function createStudent(event) {
 
   event.preventDefault();
+
+  
+  // Se estiver editando, utiliza a rotina de edição.
+  if (editingStudentUid) {
+    await updateStudent(event);
+    return;
+  }
+
 
 
   if (!firebaseFns || !db || !auth) {
