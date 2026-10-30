@@ -122,6 +122,13 @@ function openStudentModal() {
   document.body.style.overflow = "hidden";
 
 
+// Oculta evolução do peso no cadastro de um novo aluno
+const weightSection = $("#studentWeightEvolution");
+
+if (weightSection) {
+  weightSection.hidden = true;
+}
+
   clearStudentMessage();
 
 }
@@ -187,6 +194,40 @@ function closeStudentModal() {
 
 
 
+function renderStudentWeightHistory(history = {}) {
+  const container = $("#studentWeightHistory");
+  if (!container) return;
+
+  container.replaceChildren();
+
+  const entries = Object.entries(history || {})
+    .map(([id, item]) => ({ id, ...item }))
+    .filter(item => Number(item.peso) > 0)
+    .sort((a, b) => {
+      return new Date(b.data).getTime() - new Date(a.data).getTime();
+    });
+
+  if (!entries.length) {
+    const message = document.createElement("p");
+    message.textContent = "Nenhuma pesagem registrada.";
+    container.appendChild(message);
+    return;
+  }
+
+  entries.forEach(item => {
+    const row = document.createElement("p");
+
+    const date = item.data
+      ? new Date(`${item.data}T00:00:00`).toLocaleDateString("pt-BR")
+      : "Data não informada";
+
+    row.textContent = `${date} — ${Number(item.peso).toFixed(1)} kg`;
+
+    container.appendChild(row);
+  });
+}
+
+
 /**
  * Abre o formulário para editar um aluno existente.
  */
@@ -229,6 +270,23 @@ function openStudentEditModal(student) {
   // Informações do aluno
   $("#studentInitialWeight").value =
     student.peso?.pesoInicial ?? "";
+
+    // Evolução do peso
+const weightSection = $("#studentWeightEvolution");
+
+if (weightSection) {
+  weightSection.hidden = false;
+}
+
+$("#studentCurrentWeight").value =
+  student.peso?.pesoAtual ?? "";
+
+$("#studentNewWeight").value = "";
+
+$("#studentWeightDate").value =
+  new Date().toLocaleDateString("en-CA");
+
+renderStudentWeightHistory(student.peso?.historico || {});
 
   $("#studentGoal").value = student.objetivo || "";
   $("#studentObservation").value = student.observacao || "";
@@ -401,6 +459,30 @@ async function updateStudent(event) {
 
   const initialWeight = Number($("#studentInitialWeight").value || 0);
 
+  const newWeightValue = $("#studentNewWeight").value;
+const newWeightDate = $("#studentWeightDate").value;
+
+const newWeight = newWeightValue === ""
+  ? null
+  : Number(newWeightValue);
+
+// Valida se os dois campos foram preenchidos juntos
+if (
+  (newWeightValue !== "" && !newWeightDate) ||
+  (newWeightValue === "" && newWeightDate)
+) {
+  setStudentMessage(
+    "Informe o peso e a data da nova pesagem.",
+    "error"
+  );
+  return;
+}
+
+if (newWeight !== null && (!Number.isFinite(newWeight) || newWeight <= 0)) {
+  setStudentMessage("Informe um peso válido.", "error");
+  return;
+}
+
   if (!name || !birthDate) {
     setStudentMessage("Preencha o nome e a data de nascimento.", "error");
     return;
@@ -439,14 +521,40 @@ async function updateStudent(event) {
       
 peso: {
   ...previousWeight,
+
   pesoInicial: initialWeight,
+
   dataPesoInicial:
     initialWeight > 0
       ? (previousWeight.dataPesoInicial || now)
-      : "",
-  pesoAtual: initialWeight,
+      : previousWeight.dataPesoInicial || "",
+
+  pesoAtual:
+    newWeight !== null
+      ? newWeight
+      : (previousWeight.pesoAtual ?? initialWeight),
+
   dataPesoAtual:
-    initialWeight > 0 ? now : ""
+    newWeight !== null
+      ? newWeightDate
+      : (
+          previousWeight.dataPesoAtual ||
+          previousWeight.dataPesoInicial ||
+          (initialWeight > 0 ? now : "")
+        ),
+
+  historico: {
+    ...(previousWeight.historico || {}),
+    ...(newWeight !== null
+      ? {
+          [Date.now()]: {
+            peso: newWeight,
+            data: newWeightDate,
+            registradoEm: now
+          }
+        }
+      : {})
+  }
 }
 
     };

@@ -1602,6 +1602,60 @@
       </div>
 
 
+<!-- EVOLUÇÃO DO PESO -->
+<div class="student-form-section" id="studentWeightEvolution">
+
+  <div class="student-form-section-title">
+    <i class="fa-solid fa-chart-line"></i>
+    <span>Evolução do peso</span>
+  </div>
+
+  <div class="student-form-grid">
+
+    <label>
+      Peso atual (kg)
+      <input
+        id="studentCurrentWeight"
+        type="number"
+        step="0.1"
+        readonly
+        placeholder="Ainda não registrado"
+      >
+    </label>
+
+    <label>
+      Nova pesagem (kg)
+      <input
+        id="studentNewWeight"
+        type="number"
+        step="0.1"
+        min="0.1"
+        placeholder="Ex.: 80.5"
+      >
+    </label>
+
+    <label>
+      Data da pesagem
+      <input
+        id="studentWeightDate"
+        type="date"
+      >
+    </label>
+
+  </div>
+
+  <div class="student-weight-history">
+    <h4>Histórico de pesagens</h4>
+    <div id="studentWeightHistory">
+      <p>Nenhuma pesagem registrada.</p>
+    </div>
+  </div>
+
+</div>
+
+
+
+
       <!-- ACESSO -->
 
       <div class="student-form-section">
