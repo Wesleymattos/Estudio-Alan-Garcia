@@ -165,20 +165,30 @@ async function loadStudents() {
     );
 
 
-    const studentsRef =
-      firebaseRef(
-        db,
-        "alunos"
-      );
+const studentsRef =
+  firebaseRef(
+    db,
+    "alunos"
+  );
 
+const usersRef =
+  firebaseRef(
+    db,
+    "usuarios"
+  );
 
-    const snapshot =
-      await firebaseGet(
-        studentsRef
-      );
+const [
+  studentsSnapshot,
+  usersSnapshot
+] = await Promise.all([
 
+  firebaseGet(studentsRef),
 
-    if (!snapshot.exists()) {
+  firebaseGet(usersRef)
+
+]);
+
+    if (!studentsSnapshot.exists()) {
 
       students = [];
 
@@ -189,19 +199,34 @@ async function loadStudents() {
 
 
     const data =
-      snapshot.val();
+  studentsSnapshot.val();
+
+const usersData =
+  usersSnapshot.exists()
+    ? usersSnapshot.val()
+    : {};
 
 
     students =
-      Object.entries(data).map(
-        ([uid, student]) => ({
+  Object.entries(data).map(
+    ([uid, student]) => {
 
-          uid,
+      const userData =
+        usersData[uid] || {};
 
-          ...student
+      return {
 
-        })
-      );
+        uid,
+
+        ...student,
+
+        ativo:
+          userData.ativo !== false
+
+      };
+
+    }
+  );
 
 
     // Ordenar por nome
@@ -352,8 +377,9 @@ function renderStudents() {
 
 
       const status =
-        student.status ||
-        "ativo";
+  student.ativo === false
+    ? "inativo"
+    : "ativo";
 
 
       const statusText =
