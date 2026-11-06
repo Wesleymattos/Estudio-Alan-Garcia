@@ -35,14 +35,7 @@ if (fixedButton) {
 
     const { db, firebaseFns } = firebase;
 
-    const events = await loadCalendarEvents(db, firebaseFns);
-
-const fixedEvents = await loadFixedScheduleEvents(
-  db,
-  firebaseFns
-);
-
-events.push(...fixedEvents);
+const events = await loadCalendarEvents(db, firebaseFns);
 
     if (calendar) {
       calendar.destroy();
@@ -207,7 +200,23 @@ addButton.addEventListener("click", (event) => {
 },
 
 
-      events,
+      events: async (fetchInfo, successCallback, failureCallback) => {
+  try {
+    const normalEvents = await loadCalendarEvents(db, firebaseFns);
+
+    const fixedEvents = await loadFixedScheduleEvents(
+      db,
+      firebaseFns,
+      fetchInfo.start,
+      fetchInfo.end
+    );
+
+    successCallback([...normalEvents, ...fixedEvents]);
+  } catch (error) {
+    console.error("Erro ao carregar eventos:", error);
+    failureCallback(error);
+  }
+},
 
 
       eventDrop: async (info) => {
@@ -271,7 +280,9 @@ textColor: "#17191e",
 
 
 
-async function loadFixedScheduleEvents(db, fns) {
+
+
+async function loadFixedScheduleEvents(db, fns, rangeStart, rangeEnd) {
   const snapshot = await fns.get(
     fns.ref(db, "agendaFixa")
   );
@@ -281,46 +292,46 @@ async function loadFixedScheduleEvents(db, fns) {
   const schedules = snapshot.val();
   const events = [];
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(rangeStart);
+  startDate.setHours(0, 0, 0, 0);
 
-  const endDate = new Date(today);
-  endDate.setDate(endDate.getDate() + 56);
+  const endDate = new Date(rangeEnd);
+  endDate.setHours(0, 0, 0, 0);
+
+  const dayKeys = [
+    "domingo",
+    "segunda",
+    "terca",
+    "quarta",
+    "quinta",
+    "sexta",
+    "sabado"
+  ];
 
   for (const [id, schedule] of Object.entries(schedules)) {
     if (schedule.ativo !== true) continue;
 
-    const startDate = schedule.dataInicio || "0000-01-01";
-    const finishDate = schedule.dataFim || "9999-12-31";
-
-    // Cada dia contém seu próprio horário.
+    const scheduleStart = schedule.dataInicio || "0000-01-01";
+    const scheduleEnd = schedule.dataFim || "9999-12-31";
     const days = schedule.dias || {};
 
     for (
-      let date = new Date(today);
+      let date = new Date(startDate);
       date < endDate;
       date.setDate(date.getDate() + 1)
     ) {
       const dateString = formatLocalDate(date);
 
-      if (dateString < startDate || dateString > finishDate) {
+      if (
+        dateString < scheduleStart ||
+        dateString > scheduleEnd
+      ) {
         continue;
       }
-
-      const dayKeys = [
-        "domingo",
-        "segunda",
-        "terca",
-        "quarta",
-        "quinta",
-        "sexta",
-        "sabado"
-      ];
 
       const dayKey = dayKeys[date.getDay()];
       const time = days[dayKey];
 
-      // Sem horário cadastrado para este dia, não gera treino.
       if (!time) continue;
 
       events.push({
@@ -328,8 +339,8 @@ async function loadFixedScheduleEvents(db, fns) {
         title: `${schedule.clientName || "Aluno"} · Fixo`,
         start: `${dateString}T${time}:00`,
         backgroundColor: "#dc2626",
-borderColor: "#991b1b",
-textColor: "#ffffff",
+        borderColor: "#991b1b",
+        textColor: "#ffffff",
         editable: false,
         extendedProps: {
           clientId: schedule.clientId || "",
@@ -343,6 +354,7 @@ textColor: "#ffffff",
 
   return events;
 }
+
 
 
 
