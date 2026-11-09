@@ -367,25 +367,7 @@ async function createCalendarEvent(info) {
 const { db, firebaseFns: fns } = firebase;
 
 try {
-  let existingSchedule = null;
 
-  if (scheduleId) {
-    const scheduleSnapshot = await fns.get(
-      fns.ref(db, `agendaFixa/${scheduleId}`)
-    );
-
-    if (!scheduleSnapshot.exists()) {
-      alert("Agenda fixa não encontrada.");
-      return;
-    }
-
-    existingSchedule = scheduleSnapshot.val();
-
-    if (existingSchedule.ativo !== true) {
-      alert("Esta agenda fixa já foi encerrada.");
-      return;
-    }
-  }
 
   const snapshot = await fns.get(fns.ref(db, "alunos"));
 
