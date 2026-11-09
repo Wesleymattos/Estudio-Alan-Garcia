@@ -13,7 +13,7 @@ export async function initStudioCalendar() {
   const fixedButton = document.getElementById("btnAgendaFixa");
 
 if (fixedButton) {
-  fixedButton.onclick = createFixedSchedule;
+  fixedButton.onclick = () => createFixedSchedule();
 }
 
   if (typeof FullCalendar === "undefined") {
@@ -364,10 +364,30 @@ async function createCalendarEvent(info) {
     return;
   }
 
-  const { db, firebaseFns: fns } = firebase;
+const { db, firebaseFns: fns } = firebase;
 
-  try {
-    const snapshot = await fns.get(fns.ref(db, "alunos"));
+try {
+  let existingSchedule = null;
+
+  if (scheduleId) {
+    const scheduleSnapshot = await fns.get(
+      fns.ref(db, `agendaFixa/${scheduleId}`)
+    );
+
+    if (!scheduleSnapshot.exists()) {
+      alert("Agenda fixa não encontrada.");
+      return;
+    }
+
+    existingSchedule = scheduleSnapshot.val();
+
+    if (existingSchedule.ativo !== true) {
+      alert("Esta agenda fixa já foi encerrada.");
+      return;
+    }
+  }
+
+  const snapshot = await fns.get(fns.ref(db, "alunos"));
 
     if (!snapshot.exists()) {
       alert("Não há alunos cadastrados no Firebase.");
@@ -538,10 +558,30 @@ async function createCalendarEvent(info) {
 
 
 
-async function createFixedSchedule() {
+async function createFixedSchedule(scheduleId = null) {
   const { db, firebaseFns: fns } = firebase;
 
   try {
+    let existingSchedule = null;
+
+    if (scheduleId) {
+      const scheduleSnapshot = await fns.get(
+        fns.ref(db, `agendaFixa/${scheduleId}`)
+      );
+
+      if (!scheduleSnapshot.exists()) {
+        alert("Agenda fixa não encontrada.");
+        return;
+      }
+
+      existingSchedule = scheduleSnapshot.val();
+
+      if (existingSchedule.ativo !== true) {
+        alert("Esta agenda fixa já foi encerrada.");
+        return;
+      }
+    }
+
     const snapshot = await fns.get(fns.ref(db, "alunos"));
 
     if (!snapshot.exists()) {
@@ -572,6 +612,8 @@ async function createFixedSchedule() {
       ["domingo", "Domingo"]
     ];
 
+
+    const currentDays = existingSchedule?.dias || {};
     const overlay = document.createElement("div");
     overlay.style.cssText = `
       position:fixed;inset:0;z-index:100001;
@@ -585,13 +627,15 @@ async function createFixedSchedule() {
         padding:24px;border:1px solid #ff7a18;border-radius:14px;
         max-height:90vh;overflow:auto;box-sizing:border-box;
       ">
-        <h2 style="margin-top:0">Agenda fixa semanal</h2>
+        <h2 style="margin-top:0">
+  ${scheduleId ? "Editar agenda fixa" : "Agenda fixa semanal"}
+</h2>
 
         <label>Aluno</label>
         <select id="fixedStudent" required style="display:block;width:100%;padding:11px;margin:8px 0 16px;box-sizing:border-box">
           <option value="">Selecione o aluno</option>
           ${students.map(s => `
-            <option value="${s.uid}">${s.name.replace(/[&<>"']/g, c => ({
+            <option value="${s.uid}" ${s.uid === existingSchedule?.clientId ? "selected" : ""}>${s.name.replace(/[&<>"']/g, c => ({
               "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
             })[c])}</option>
           `).join("")}
@@ -599,8 +643,12 @@ async function createFixedSchedule() {
 
         <label>Tipo de treino</label>
         <select id="fixedService" style="display:block;width:100%;padding:11px;margin:8px 0 16px;box-sizing:border-box">
-          <option>Treino personalizado</option>
-          <option>Treino funcional</option>
+<option ${existingSchedule?.service === "Treino personalizado" ? "selected" : ""}>
+  Treino personalizado
+</option>
+<option ${existingSchedule?.service === "Treino funcional" ? "selected" : ""}>
+  Treino funcional
+</option>
         </select>
 
         <label style="display:block;margin-bottom:10px">Dias e horários</label>
@@ -611,13 +659,18 @@ async function createFixedSchedule() {
             align-items:center;gap:12px;margin:12px 0;
           ">
             <label>
-              <input type="checkbox" name="fixedDay" value="${key}">
+              <input
+  type="checkbox"
+  name="fixedDay"
+  value="${key}"
+  ${currentDays[key] ? "checked" : ""}
+>
               ${label}
             </label>
             <input
               type="time"
               data-day="${key}"
-              value="16:00"
+              value="${currentDays[key] || "16:00"}"
               disabled
               style="width:100%;padding:9px;box-sizing:border-box"
               aria-label="Horário de ${label}"
@@ -626,8 +679,9 @@ async function createFixedSchedule() {
         `).join("")}
 
         <label>Início da programação</label>
-        <input id="fixedStart" type="date" required
-          style="display:block;width:100%;padding:11px;margin:8px 0 18px;box-sizing:border-box">
+<input id="fixedStart" type="date" required
+  value="${existingSchedule?.dataInicio || ""}"
+  style="display:block;width:100%;padding:11px;margin:8px 0 18px;box-sizing:border-box">
 
         <div style="display:flex;gap:10px">
           <button type="submit" style="flex:1;padding:12px;background:#ff7a18;border:0;border-radius:8px;font-weight:bold">
@@ -646,19 +700,25 @@ async function createFixedSchedule() {
 
     overlay.querySelector("#fixedCancel").addEventListener("click", close);
 
-    overlay.querySelector("#fixedStart").value = formatLocalDate(new Date());
+    if (!scheduleId) {
+  overlay.querySelector("#fixedStart").value = formatLocalDate(new Date());
+}
 
-    overlay.querySelectorAll('input[name="fixedDay"]').forEach(checkbox => {
-      checkbox.addEventListener("change", () => {
-        const timeInput = overlay.querySelector(
-          `input[data-day="${checkbox.value}"]`
-        );
+overlay.querySelectorAll('input[name="fixedDay"]').forEach(checkbox => {
+  const timeInput = overlay.querySelector(
+    `input[data-day="${checkbox.value}"]`
+  );
 
-        timeInput.disabled = !checkbox.checked;
-        timeInput.required = checkbox.checked;
-      });
-    });
+  // Inicializa o estado do horário
+  timeInput.disabled = !checkbox.checked;
+  timeInput.required = checkbox.checked;
 
+  // Atualiza quando o dia for marcado ou desmarcado
+  checkbox.addEventListener("change", () => {
+    timeInput.disabled = !checkbox.checked;
+    timeInput.required = checkbox.checked;
+  });
+});
     overlay.querySelector("form").addEventListener("submit", async event => {
       event.preventDefault();
 
@@ -680,37 +740,43 @@ async function createFixedSchedule() {
         return;
       }
 
-      const schedule = {
-        clientId,
-        clientName: student.name,
-        service: overlay.querySelector("#fixedService").value,
-        dias,
-        dataInicio: overlay.querySelector("#fixedStart").value,
-        ativo: true,
-        createdAt: new Date().toISOString()
-      };
+const schedule = {
+  ...(existingSchedule || {}),
+  clientId,
+  clientName: student.name,
+  service: overlay.querySelector("#fixedService").value,
+  dias,
+  dataInicio: overlay.querySelector("#fixedStart").value,
+  ativo: true,
+  createdAt: existingSchedule?.createdAt || new Date().toISOString()
+};
 
       try {
   // Verifica agendas fixas já cadastradas
   const fixedSnapshot = await fns.get(fns.ref(db, "agendaFixa"));
-  const fixedSchedules = fixedSnapshot.exists()
-    ? Object.values(fixedSnapshot.val())
-    : [];
+const fixedSchedules = fixedSnapshot.exists()
+  ? Object.entries(fixedSnapshot.val()).map(([id, schedule]) => ({
+      id,
+      ...schedule
+    }))
+  : [];
 
-  // Verifica os próximos 56 dias (8 semanas)
-  const startDate = new Date(`${schedule.dataInicio}T00:00:00`);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+// Verifica os próximos 56 dias (8 semanas)
+const startDate = new Date(`${schedule.dataInicio}T00:00:00`);
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const validationStart = startDate > today ? startDate : today;
 
   if (Number.isNaN(startDate.getTime())) {
     alert("Data de início inválida.");
     return;
   }
 
-  if (startDate < today) {
-    alert("A data de início não pode estar no passado.");
-    return;
-  }
+if (!scheduleId && startDate < today) {
+  alert("A data de início não pode estar no passado.");
+  return;
+}
 
   const dayNames = [
     "domingo",
@@ -724,9 +790,9 @@ async function createFixedSchedule() {
 
   const conflicts = [];
 
-  for (let i = 0; i < 56; i++) {
-    const occurrence = new Date(startDate);
-    occurrence.setDate(startDate.getDate() + i);
+for (let i = 0; i < 56; i++) {
+  const occurrence = new Date(validationStart);
+  occurrence.setDate(validationStart.getDate() + i);
 
     const dayName = dayNames[occurrence.getDay()];
     const time = schedule.dias[dayName];
@@ -736,9 +802,10 @@ async function createFixedSchedule() {
     const dateString = formatLocalDate(occurrence);
 
     // Conta as agendas fixas ativas nesse dia e horário
-    const fixedCount = fixedSchedules.filter(existing => {
-      return (
-        existing.ativo !== false &&
+const fixedCount = fixedSchedules.filter(existing => {
+  return (
+    existing.id !== scheduleId &&
+    existing.ativo === true &&
         existing.dias &&
         existing.dias[dayName] === time &&
         existing.dataInicio &&
@@ -769,7 +836,7 @@ async function createFixedSchedule() {
 
   if (conflicts.length > 0) {
     alert(
-      "Não foi possível cadastrar a agenda fixa. " +
+`Não foi possível ${scheduleId ? "editar" : "cadastrar"} a agenda fixa. ` +
       "O limite de 5 alunos já foi atingido em:\n\n" +
       conflicts.join("\n") +
       "\n\nEscolha outro horário."
@@ -777,13 +844,25 @@ async function createFixedSchedule() {
     return;
   }
 
-  // Salva somente se houver vaga
+if (scheduleId) {
+  // Atualiza a programação existente
+  await fns.update(
+    fns.ref(db, `agendaFixa/${scheduleId}`),
+    schedule
+  );
+} else {
+  // Cria uma nova programação
   const newRef = fns.push(fns.ref(db, "agendaFixa"));
   await fns.set(newRef, schedule);
+}
 
         close();
         await initStudioCalendar();
-        alert("Agenda fixa semanal salva!");
+        alert(
+  scheduleId
+    ? "Agenda fixa atualizada com sucesso!"
+    : "Agenda fixa semanal salva!"
+);
       } catch (error) {
         console.error("Erro ao salvar agenda fixa:", error);
         alert("Não foi possível salvar a programação.");
@@ -1018,11 +1097,49 @@ async function showSlotModal(date) {
 
       details.append(name, time);
 
-      const actionButton = document.createElement("button");
-      actionButton.type = "button";
-      actionButton.textContent = isFixed
-        ? "Encerrar treino fixo"
-        : "Remover";
+const actions = document.createElement("div");
+
+actions.style.cssText = `
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  flex-shrink:0;
+`;
+
+const actionButton = document.createElement("button");
+actionButton.type = "button";
+actionButton.textContent = isFixed
+  ? "Encerrar treino fixo"
+  : "Remover";
+
+let editButton = null;
+
+if (isFixed) {
+  editButton = document.createElement("button");
+  editButton.type = "button";
+  editButton.textContent = "Editar horários";
+
+  editButton.style.cssText = `
+    padding:8px 10px;
+    color:#17191e;
+    background:#ff7a18;
+    border:0;
+    border-radius:7px;
+    cursor:pointer;
+  `;
+
+  editButton.addEventListener("click", async () => {
+    const scheduleId = event.extendedProps.agendaFixaId;
+
+    if (!scheduleId) {
+      alert("Não foi possível identificar a agenda fixa.");
+      return;
+    }
+
+    closeModal();
+    await createFixedSchedule(scheduleId);
+  });
+}
 
       actionButton.style.cssText = `
         flex-shrink:0;
@@ -1108,7 +1225,13 @@ async function showSlotModal(date) {
         }
       });
 
-      row.append(details, actionButton);
+      if (editButton) {
+  actions.appendChild(editButton);
+}
+
+actions.appendChild(actionButton);
+
+row.append(details, actions);
       list.appendChild(row);
     });
 
