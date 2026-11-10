@@ -322,7 +322,7 @@ async function loadStudentAgenda(uid) {
           firebaseFns.ref(db, `agendaAluno/${uid}`)
         ),
         firebaseFns.get(
-          firebaseFns.ref(db, "agendaFixa")
+          firebaseFns.ref(db, `agendaFixaAluno/${uid}`)
         )
       ]);
 

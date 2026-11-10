@@ -826,17 +826,28 @@ const fixedCount = fixedSchedules.filter(existing => {
     return;
   }
 
-if (scheduleId) {
-  // Atualiza a programação existente
-  await fns.update(
-    fns.ref(db, `agendaFixa/${scheduleId}`),
-    schedule
-  );
-} else {
-  // Cria uma nova programação
-  const newRef = fns.push(fns.ref(db, "agendaFixa"));
-  await fns.set(newRef, schedule);
+// Gera um ID para novas agendas ou mantém o ID existente
+const fixedScheduleId = scheduleId ||
+  fns.push(fns.ref(db, "agendaFixa")).key;
+
+// Atualiza os dois caminhos no Firebase
+const updates = {};
+
+updates[`agendaFixa/${fixedScheduleId}`] = schedule;
+
+updates[`agendaFixaAluno/${clientId}/${fixedScheduleId}`] = schedule;
+
+// Se o aluno foi alterado durante a edição, remove a cópia antiga
+if (
+  existingSchedule?.clientId &&
+  existingSchedule.clientId !== clientId
+) {
+  updates[
+    `agendaFixaAluno/${existingSchedule.clientId}/${fixedScheduleId}`
+  ] = null;
 }
+
+await fns.update(fns.ref(db), updates);
 
         close();
         await initStudioCalendar();
@@ -1153,10 +1164,17 @@ if (isFixed) {
           actionButton.disabled = true;
 
           try {
-            await fns.update(
-              fns.ref(db, `agendaFixa/${scheduleId}`),
-              { ativo: false }
-            );
+const clientId = event.extendedProps.clientId;
+
+const updates = {};
+
+updates[`agendaFixa/${scheduleId}/ativo`] = false;
+
+if (clientId) {
+  updates[`agendaFixaAluno/${clientId}/${scheduleId}/ativo`] = false;
+}
+
+await fns.update(fns.ref(db), updates);
 
             calendar.getEvents().forEach((calendarEvent) => {
               if (
