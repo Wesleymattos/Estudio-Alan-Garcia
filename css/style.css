@@ -6052,3 +6052,37 @@ footer a:hover {
     font-size: 22px;
   }
 }
+
+
+/* CARREGAMENTO ANIMADO DO LOGIN */
+
+.login-loading {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #111318;
+}
+
+.login-loading img {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.login-loading[hidden],
+#loginFormContent[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .login-loading {
+    min-height: 230px;
+  }
+}

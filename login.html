@@ -118,61 +118,55 @@
       </h2>
 
 
-      <form
-        id="loginForm"
-        class="login-form"
+
+<form id="loginForm" class="login-form">
+
+  <div id="loginFormContent">
+
+    <label>
+      E-mail
+      <input
+        id="loginEmail"
+        type="email"
+        required
+        autocomplete="email"
+        placeholder="Digite seu e-mail"
       >
+    </label>
 
+    <label>
+      Senha
+      <input
+        id="loginPassword"
+        type="password"
+        required
+        autocomplete="current-password"
+        placeholder="Digite sua senha"
+      >
+    </label>
 
-        <label>
+    <button class="btn btn-primary" type="submit">
+      Entrar no painel
+    </button>
 
-          E-mail
+    <p
+      id="loginMessage"
+      class="form-message"
+      role="status"
+      aria-live="polite"
+    ></p>
 
-          <input
-            id="loginEmail"
-            type="email"
-            required
-            autocomplete="email"
-            placeholder="Digite seu e-mail"
-          >
+  </div>
 
-        </label>
+  <div id="loginLoading" class="login-loading" hidden>
+    <img
+      src="assets/studio_alan_carregando.gif"
+      alt="Preparando seu treino"
+    >
+  </div>
 
+</form>
 
-
-        <label>
-
-          Senha
-
-          <input
-            id="loginPassword"
-            type="password"
-            required
-            autocomplete="current-password"
-            placeholder="Digite sua senha"
-          >
-
-        </label>
-
-
-
-        <button
-          class="btn btn-primary"
-          type="submit"
-        >
-
-          Entrar no painel
-
-        </button>
-
-
-        <p
-          id="loginMessage"
-          class="form-message"
-        ></p>
-
-
-      </form>
 
     </section>
 

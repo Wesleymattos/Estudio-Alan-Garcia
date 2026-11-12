@@ -48,6 +48,38 @@ const loginEmail = $("#loginEmail");
 const loginPassword = $("#loginPassword");
 const loginMessage = $("#loginMessage");
 
+const loginFormContent = $("#loginFormContent");
+const loginLoading = $("#loginLoading");
+
+const MIN_LOGIN_LOADING_MS = 3000;
+let loginLoadingStartedAt = 0;
+
+function setLoginLoading(isLoading) {
+  if (loginFormContent) {
+    loginFormContent.hidden = isLoading;
+  }
+
+  if (loginLoading) {
+    loginLoading.hidden = !isLoading;
+  }
+}
+
+async function waitForLoginLoadingMinimum() {
+  if (!loginLoadingStartedAt) return;
+
+  const elapsed = Date.now() - loginLoadingStartedAt;
+  const remaining = Math.max(
+    0,
+    MIN_LOGIN_LOADING_MS - elapsed
+  );
+
+  if (remaining > 0) {
+    await new Promise(resolve => setTimeout(resolve, remaining));
+  }
+
+  loginLoadingStartedAt = 0;
+}
+
 const logoutBtn = $("#logoutBtn");
 
 const firebaseStatus = $("#firebaseStatus");
@@ -58,6 +90,10 @@ const firebaseStatus = $("#firebaseStatus");
 // ============================================================
 
 async function handleAuthState(user) {
+
+if (user && loginLoadingStartedAt) {
+  await waitForLoginLoadingMinimum();
+}
 
   // ----------------------------------------------------------
   // NÃO ESTÁ LOGADO
@@ -196,6 +232,10 @@ async function handleAuthState(user) {
 
 function showLogin(message = "") {
 
+
+  loginLoadingStartedAt = 0;
+setLoginLoading(false);
+
   if (loginView) {
     loginView.hidden = false;
   }
@@ -297,13 +337,12 @@ async function handleLogin(event) {
   }
 
 
-  if (loginMessage) {
+loginLoadingStartedAt = Date.now();
+setLoginLoading(true);
 
-    loginMessage.textContent =
-      "Entrando...";
-
-  }
-
+if (loginMessage) {
+  loginMessage.textContent = "";
+}
 
   try {
 
@@ -321,6 +360,9 @@ async function handleLogin(event) {
 
   } catch (error) {
 
+
+    loginLoadingStartedAt = 0;
+setLoginLoading(false);
     console.error(
       "Erro no login:",
       error
