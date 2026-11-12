@@ -203,6 +203,40 @@ function renderStudent(studentData) {
   // RESUMO
   // ----------------------------------------------------------
 
+
+
+document.addEventListener("click", (event) => {
+  const navButton = event.target.closest("[data-calendar-nav]");
+
+  if (navButton) {
+    const direction = Number(
+      navButton.dataset.calendarNav
+    );
+
+    studentCalendarMonth += direction;
+
+    if (studentCalendarMonth > 11) {
+      studentCalendarMonth = 0;
+      studentCalendarYear++;
+    } else if (studentCalendarMonth < 0) {
+      studentCalendarMonth = 11;
+      studentCalendarYear--;
+    }
+
+    renderStudentAgenda(studentCalendarAppointments);
+    return;
+  }
+
+  const dayButton = event.target.closest("[data-calendar-date]");
+
+  if (dayButton) {
+    studentCalendarSelectedDate =
+      dayButton.dataset.calendarDate;
+
+    renderStudentAgenda(studentCalendarAppointments);
+  }
+});
+
   const summaryWeight =
     $("#summaryCurrentWeight");
 
@@ -471,54 +505,209 @@ async function loadStudentAgenda(uid) {
 // RENDERIZAR AGENDA DO ALUNO
 // ============================================================
 
+
+let studentCalendarMonth = new Date().getMonth();
+let studentCalendarYear = new Date().getFullYear();
+let studentCalendarSelectedDate = new Date().toISOString().slice(0, 10);
+let studentCalendarAppointments = [];
+
 function renderStudentAgenda(appointments) {
-
-  const list =
-    $("#studentAgendaList");
-
+  const list = $("#studentAgendaList");
   if (!list) return;
 
-  list.innerHTML =
-    appointments.map(item => `
+  studentCalendarAppointments = appointments || [];
 
-      <article class="student-agenda-item">
+  const monthDate = new Date(
+    studentCalendarYear,
+    studentCalendarMonth,
+    1
+  );
 
-        <div class="student-agenda-date">
+  const monthName = monthDate.toLocaleDateString("pt-BR", {
+    month: "long",
+    year: "numeric"
+  });
 
-          <strong>
-            ${formatStudentDate(item.date)}
-          </strong>
+  const firstDay = new Date(
+    studentCalendarYear,
+    studentCalendarMonth,
+    1
+  );
 
-          <span>
-            ${escapeHtml(item.time || "")}
-          </span>
+  // Segunda-feira como primeiro dia da semana
+  const startOffset = (firstDay.getDay() + 6) % 7;
+
+  const daysInMonth = new Date(
+    studentCalendarYear,
+    studentCalendarMonth + 1,
+    0
+  ).getDate();
+
+  const today = new Date();
+  const todayString = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0")
+  ].join("-");
+
+  let calendarDays = "";
+
+  for (let i = 0; i < 42; i++) {
+    const dayNumber = i - startOffset + 1;
+
+    const date = new Date(
+      studentCalendarYear,
+      studentCalendarMonth,
+      dayNumber
+    );
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const dateString = `${year}-${month}-${day}`;
+
+    const isCurrentMonth =
+      date.getMonth() === studentCalendarMonth;
+
+    const hasTraining =
+      studentCalendarAppointments.some(
+        item => item.date === dateString
+      );
+
+    const classes = [
+      "student-calendar-day",
+      dateString === todayString ? "today" : "",
+      dateString === studentCalendarSelectedDate ? "selected" : "",
+      !isCurrentMonth ? "other-month" : "",
+      hasTraining ? "has-training" : ""
+    ].filter(Boolean).join(" ");
+
+    calendarDays += `
+      <button
+        type="button"
+        class="${classes}"
+        data-calendar-date="${dateString}"
+        ${!isCurrentMonth ? "disabled" : ""}
+        aria-label="${day}/${month}/${year}"
+      >
+<span class="student-calendar-day-number">
+  ${date.getDate()}
+</span>
+
+${
+  studentCalendarAppointments
+    .filter(item => item.date === dateString)
+.map(item => `
+  <span class="student-calendar-day-event">
+    <strong>${escapeHtml(item.service || "Treino")}</strong>
+    <small>${escapeHtml(item.time || "")}</small>
+  </span>
+`)
+    .join("")
+}
+      </button>
+    `;
+  }
+
+  list.innerHTML = `
+    <div class="student-calendar">
+
+      <div class="student-calendar-header">
+
+        <div class="student-calendar-month">
+          ${monthName}
+        </div>
+
+        <div class="student-calendar-navigation">
+
+          <button
+            type="button"
+            data-calendar-nav="-1"
+            aria-label="Mês anterior"
+          >
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <button
+            type="button"
+            data-calendar-nav="1"
+            aria-label="Próximo mês"
+          >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
 
         </div>
 
-        <div class="student-agenda-info">
+      </div>
 
-          <strong>
-            ${escapeHtml(
-              item.service || "Treino"
-            )}
-          </strong>
+      <div class="student-calendar-grid">
 
-          ${
-            item.notes
-              ? `
-                <span>
-                  ${escapeHtml(item.notes)}
-                </span>
-              `
-              : ""
-          }
+        ${["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+          .map(day => `
+            <div class="student-calendar-weekday">${day}</div>
+          `).join("")}
 
-        </div>
+        ${calendarDays}
 
-      </article>
+      </div>
 
-    `).join("");
+      <div id="studentCalendarEvents" class="student-calendar-events">
+      </div>
 
+    </div>
+  `;
+
+  renderStudentCalendarEvents();
+}
+
+function renderStudentCalendarEvents() {
+  const container = $("#studentCalendarEvents");
+  if (!container) return;
+
+  const selectedDate = studentCalendarSelectedDate;
+
+  const events = studentCalendarAppointments.filter(
+    item => item.date === selectedDate
+  );
+
+  const dateLabel = selectedDate
+    ? formatStudentDate(selectedDate)
+    : "";
+
+  container.innerHTML = `
+    <h3>${dateLabel}</h3>
+
+    ${
+      events.length
+        ? events.map(item => `
+            <article class="student-calendar-event">
+
+              <div>
+                <strong>
+                  ${escapeHtml(item.service || "Treino")}
+                </strong>
+
+                ${
+                  item.notes
+                    ? `<p>${escapeHtml(item.notes)}</p>`
+                    : ""
+                }
+              </div>
+
+              <span>
+                ${escapeHtml(item.time || "")}
+              </span>
+
+            </article>
+          `).join("")
+        : `
+          <div class="student-calendar-empty">
+            Nenhum treino agendado para este dia.
+          </div>
+        `
+    }
+  `;
 }
 
 
