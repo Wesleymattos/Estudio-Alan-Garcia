@@ -1038,3 +1038,168 @@ button {
   font-size: 9px;
   color: #fff;
 }
+
+
+.student-calendar-event {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.student-calendar-event-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.student-calendar-event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.student-calendar-event-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.student-calendar-cancel {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+}
+
+.student-calendar-reschedule {
+  background: var(--student-orange-soft);
+  border: 1px solid var(--student-orange);
+  color: var(--student-orange);
+}
+
+.student-calendar-event-actions a:hover {
+  filter: brightness(1.2);
+}
+
+@media (max-width: 380px) {
+  .student-calendar-event-actions {
+    width: 100%;
+  }
+
+  .student-calendar-event-actions a {
+    flex: 1;
+  }
+}
+
+
+
+/* ============================================================
+   BALÃO FLUTUANTE DOS COMPROMISSOS
+   ============================================================ */
+
+.student-calendar {
+  position: relative;
+}
+
+.student-calendar-popover {
+  position: absolute;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(340px, calc(100% - 24px));
+  padding: 22px;
+  border: 1px solid var(--student-orange);
+  border-radius: 14px;
+  background: #191b20;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.65);
+  color: #fff;
+  animation: studentPopoverIn 0.2s ease;
+}
+
+.student-calendar-popover::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 13px;
+  height: 13px;
+  background: #191b20;
+  border-top: 1px solid var(--student-orange);
+  border-left: 1px solid var(--student-orange);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.student-calendar-popover h3 {
+  margin: 0 30px 18px 0;
+  color: #fff;
+  font-size: 16px;
+}
+
+.student-calendar-popover-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.student-calendar-popover-event {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 13px 0;
+  border-top: 1px solid var(--student-border);
+}
+
+.student-calendar-popover-event strong {
+  color: #fff;
+  font-size: 14px;
+}
+
+.student-calendar-popover-event span {
+  color: var(--student-orange);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@keyframes studentPopoverIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -47%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .student-calendar-popover {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 36px);
+    max-width: 360px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .student-calendar-popover::before {
+    display: none;
+  }
+}

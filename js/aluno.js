@@ -205,37 +205,7 @@ function renderStudent(studentData) {
 
 
 
-document.addEventListener("click", (event) => {
-  const navButton = event.target.closest("[data-calendar-nav]");
 
-  if (navButton) {
-    const direction = Number(
-      navButton.dataset.calendarNav
-    );
-
-    studentCalendarMonth += direction;
-
-    if (studentCalendarMonth > 11) {
-      studentCalendarMonth = 0;
-      studentCalendarYear++;
-    } else if (studentCalendarMonth < 0) {
-      studentCalendarMonth = 11;
-      studentCalendarYear--;
-    }
-
-    renderStudentAgenda(studentCalendarAppointments);
-    return;
-  }
-
-  const dayButton = event.target.closest("[data-calendar-date]");
-
-  if (dayButton) {
-    studentCalendarSelectedDate =
-      dayButton.dataset.calendarDate;
-
-    renderStudentAgenda(studentCalendarAppointments);
-  }
-});
 
   const summaryWeight =
     $("#summaryCurrentWeight");
@@ -658,8 +628,10 @@ ${
     </div>
   `;
 
-  renderStudentCalendarEvents();
+renderStudentCalendarEvents();
+setupStudentCalendarPopover();
 }
+
 
 function renderStudentCalendarEvents() {
   const container = $("#studentCalendarEvents");
@@ -671,36 +643,66 @@ function renderStudentCalendarEvents() {
     item => item.date === selectedDate
   );
 
-  const dateLabel = selectedDate
-    ? formatStudentDate(selectedDate)
-    : "";
+  const dateLabel = formatStudentDate(selectedDate);
 
   container.innerHTML = `
     <h3>${dateLabel}</h3>
 
     ${
       events.length
-        ? events.map(item => `
-            <article class="student-calendar-event">
+        ? events.map(item => {
+            const appointment =
+              `${item.service || "Treino"} - ${formatStudentDate(item.date)} às ${item.time || "horário não informado"}`;
 
-              <div>
-                <strong>
-                  ${escapeHtml(item.service || "Treino")}
-                </strong>
+const studentName =
+  $("#studentName")?.textContent.trim() || "Aluno";
 
-                ${
-                  item.notes
-                    ? `<p>${escapeHtml(item.notes)}</p>`
-                    : ""
-                }
-              </div>
+const cancelMessage =
+  `${studentName} (mensagem automática): Olá Alan, preciso cancelar o compromisso ${appointment}.`;
 
-              <span>
-                ${escapeHtml(item.time || "")}
-              </span>
+const rescheduleMessage =
+  `${studentName} (mensagem automática): Olá Alan, podemos remarcar o horário ${appointment}?`;
 
-            </article>
-          `).join("")
+            const whatsapp = "https://wa.me/5551980135744";
+
+            return `
+              <article class="student-calendar-event">
+
+                <div class="student-calendar-event-info">
+                  <strong>
+                    ${escapeHtml(item.service || "Treino")}
+                  </strong>
+
+                  <span>
+                    ${escapeHtml(item.time || "")}
+                  </span>
+                </div>
+
+                <div class="student-calendar-event-actions">
+
+                  <a
+                    href="${whatsapp}?text=${encodeURIComponent(cancelMessage)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="student-calendar-cancel"
+                  >
+                    Solicitar Cancelamento
+                  </a>
+
+                  <a
+                    href="${whatsapp}?text=${encodeURIComponent(rescheduleMessage)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="student-calendar-reschedule"
+                  >
+                    Pedir para Remarcar
+                  </a>
+
+                </div>
+
+              </article>
+            `;
+          }).join("")
         : `
           <div class="student-calendar-empty">
             Nenhum treino agendado para este dia.
@@ -711,9 +713,165 @@ function renderStudentCalendarEvents() {
 }
 
 
+
+document.addEventListener("click", (event) => {
+  const navButton = event.target.closest("[data-calendar-nav]");
+
+  if (navButton) {
+    const direction = Number(
+      navButton.dataset.calendarNav
+    );
+
+    studentCalendarMonth += direction;
+
+    if (studentCalendarMonth > 11) {
+      studentCalendarMonth = 0;
+      studentCalendarYear++;
+    } else if (studentCalendarMonth < 0) {
+      studentCalendarMonth = 11;
+      studentCalendarYear--;
+    }
+
+    renderStudentAgenda(studentCalendarAppointments);
+    return;
+  }
+
+  const dayButton = event.target.closest("[data-calendar-date]");
+
+  if (dayButton) {
+    studentCalendarSelectedDate =
+      dayButton.dataset.calendarDate;
+
+    renderStudentAgenda(studentCalendarAppointments);
+  }
+});
+
 // ============================================================
 // RESUMO DA AGENDA
 // ============================================================
+
+
+
+function setupStudentCalendarPopover() {
+  const calendar = $("#studentAgendaList");
+  if (!calendar) return;
+
+  // Evita registrar os mesmos eventos várias vezes
+  if (calendar.dataset.popoverReady === "true") return;
+  calendar.dataset.popoverReady = "true";
+
+  document.addEventListener("click", (event) => {
+    const dayButton = event.target.closest("[data-calendar-date]");
+    const existingPopover = document.querySelector(
+      ".student-calendar-popover"
+    );
+
+    if (dayButton) {
+      const date = dayButton.dataset.calendarDate;
+
+      const events = studentCalendarAppointments.filter(
+        item => item.date === date
+      );
+
+      if (!events.length) {
+        existingPopover?.remove();
+        return;
+      }
+
+      existingPopover?.remove();
+
+      const popover = document.createElement("div");
+      popover.className = "student-calendar-popover";
+
+      const studentName =
+        $("#studentName")?.textContent.trim() || "Aluno";
+
+      popover.innerHTML = `
+        <button
+          type="button"
+          class="student-calendar-popover-close"
+          aria-label="Fechar"
+        >
+          &times;
+        </button>
+
+        <h3>${formatStudentDate(date)}</h3>
+
+        ${events.map(item => {
+          const appointment =
+            `${item.service || "Treino"} - ${formatStudentDate(item.date)} às ${item.time || "horário não informado"}`;
+
+          const cancelMessage =
+            `${studentName} (mensagem automática): Olá Alan, preciso cancelar o compromisso ${appointment}.`;
+
+          const rescheduleMessage =
+            `${studentName} (mensagem automática): Olá Alan, podemos remarcar o horário ${appointment}?`;
+
+          const whatsapp = "https://wa.me/5551980135744";
+
+          return `
+            <div class="student-calendar-popover-event">
+              <strong>${escapeHtml(item.service || "Treino")}</strong>
+              <span>${escapeHtml(item.time || "")}</span>
+
+              <div class="student-calendar-event-actions">
+                <a
+                  class="student-calendar-cancel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="${whatsapp}?text=${encodeURIComponent(cancelMessage)}"
+                >
+                  Cancelar
+                </a>
+
+                <a
+                  class="student-calendar-reschedule"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="${whatsapp}?text=${encodeURIComponent(rescheduleMessage)}"
+                >
+                  Remarcar
+                </a>
+              </div>
+            </div>
+          `;
+        }).join("")}
+      `;
+
+      const calendarElement = calendar.querySelector(".student-calendar");
+
+if (calendarElement) {
+  calendarElement.appendChild(popover);
+}
+
+      const closeButton = popover.querySelector(
+        ".student-calendar-popover-close"
+      );
+
+      closeButton.addEventListener("click", () => {
+        popover.remove();
+      });
+
+      return;
+    }
+
+    if (
+      existingPopover &&
+      !event.target.closest(".student-calendar-popover")
+    ) {
+      existingPopover.remove();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      document.querySelector(
+        ".student-calendar-popover"
+      )?.remove();
+    }
+  });
+}
+
 
 function updateAgendaSummary(appointments) {
 
