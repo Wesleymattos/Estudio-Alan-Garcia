@@ -355,6 +355,7 @@ export async function addAppointment(appointment) {
 // EXCLUIR AGENDAMENTO
 // ============================================================
 
+
 export async function deleteAppointment(id) {
 
   await getFirebase();
@@ -368,11 +369,27 @@ export async function deleteAppointment(id) {
 
     try {
 
-      await firebaseFns.remove(
-        firebaseFns.ref(
-          db,
-          `agenda/${id}`
-        )
+      // Localiza o compromisso antes de excluir
+      const appointment = appointments.find(
+        item => item.id === id
+      );
+
+      const updates = {};
+
+      // Remove da agenda principal
+      updates[`agenda/${id}`] = null;
+
+      // Remove da agenda individual do aluno
+      if (appointment?.clientId) {
+        updates[
+          `agendaAluno/${appointment.clientId}/${id}`
+        ] = null;
+      }
+
+      // Executa as exclusões simultaneamente
+      await firebaseFns.update(
+        firebaseFns.ref(db),
+        updates
       );
 
     } catch (error) {
@@ -381,21 +398,19 @@ export async function deleteAppointment(id) {
         "Erro ao excluir agendamento:",
         error
       );
+
+      return;
     }
   }
 
-
-  appointments =
-    appointments.filter(
-      item => item.id !== id
-    );
-
+  appointments = appointments.filter(
+    item => item.id !== id
+  );
 
   localStorage.setItem(
     LOCAL_KEY,
     JSON.stringify(appointments)
   );
-
 
   renderAppointments();
 }
