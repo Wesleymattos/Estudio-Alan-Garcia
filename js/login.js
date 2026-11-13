@@ -51,7 +51,7 @@ const loginMessage = $("#loginMessage");
 const loginFormContent = $("#loginFormContent");
 const loginLoading = $("#loginLoading");
 
-const MIN_LOGIN_LOADING_MS = 3000;
+const MIN_LOGIN_LOADING_MS = 50;
 let loginLoadingStartedAt = 0;
 
 function setLoginLoading(isLoading) {

@@ -29,7 +29,7 @@ const $ = (selector) =>
 // ============================================================
 
 const studentLoading = $("#studentLoading");
-const MIN_LOADING_TIME = 2500;
+const MIN_LOADING_TIME = 900;
 
 let loadingStartedAt = Date.now();
 
