@@ -25,6 +25,27 @@ const $ = (selector) =>
 
 
 // ============================================================
+// CONTROLE DO CARREGAMENTO INICIAL
+// ============================================================
+
+const studentLoading = $("#studentLoading");
+const MIN_LOADING_TIME = 2500;
+
+let loadingStartedAt = Date.now();
+
+function hideStudentLoading() {
+  const elapsed = Date.now() - loadingStartedAt;
+  const remaining = Math.max(0, MIN_LOADING_TIME - elapsed);
+
+  setTimeout(() => {
+    if (studentLoading) {
+      studentLoading.classList.add("hidden");
+    }
+  }, remaining);
+}
+
+
+// ============================================================
 // MENSAGEM DE ACESSO
 // ============================================================
 
@@ -1090,14 +1111,17 @@ async function handleStudentAuth(user) {
   // NÃO ESTÁ LOGADO
   // ----------------------------------------------------------
 
-  if (!user) {
+if (!user) {
 
-    window.location.href =
-      "login.html";
-
-    return;
-
+  if (studentLoading) {
+    studentLoading.classList.add("hidden");
   }
+
+  window.location.href = "login.html";
+
+  return;
+
+}
 
 
   try {
@@ -1234,18 +1258,24 @@ console.log(
   studentData.nomeCompleto
 );
 
-  } catch (error) {
+hideStudentLoading();
 
-    console.error(
-      "Erro ao carregar área do aluno:",
-      error
-    );
+} catch (error) {
 
-    showAccessMessage(
-      "Não foi possível carregar seus dados."
-    );
+  console.error(
+    "Erro ao inicializar área do aluno:",
+    error
+  );
 
+  if (studentLoading) {
+    studentLoading.classList.add("hidden");
   }
+
+  showAccessMessage(
+    "Erro ao inicializar o sistema."
+  );
+
+}
 
 }
 
